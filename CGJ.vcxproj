@@ -18,6 +18,9 @@
       <Platform>x64</Platform>
     </ProjectConfiguration>
   </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="src\StartingOpenGL.cpp" />
+  </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>
     <ProjectGuid>{2AEB4F64-1D3B-4D97-B473-30404811F92C}</ProjectGuid>
@@ -80,11 +83,11 @@
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
-      <AdditionalLibraryDirectories>$(SolutionDir)dependencies/glfw/lib/;$(SolutionDir)dependencies/glew/lib/Release/$(Platform);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>opengl32.lib;glew32.lib;glfw3.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(SolutionDir)dependencies/glfw/lib/$(Platform);$(SolutionDir)dependencies/glew/lib/Release/$(Platform);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>opengl32.lib;glew32.lib;glfw3dll.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
-      <Command>xcopy "$(SolutionDir)dependencies\glfw\lib\*.dll" "$(OutputPath)" /Y
+      <Command>xcopy "$(SolutionDir)dependencies\glfw\lib\$(Platform)\*.dll" "$(OutputPath)" /Y
 xcopy "$(SolutionDir)dependencies\glew\bin\Release\$(Platform)\*.dll" "$(OutputPath)" /Y</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
@@ -98,11 +101,11 @@ xcopy "$(SolutionDir)dependencies\glew\bin\Release\$(Platform)\*.dll" "$(OutputP
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
-      <AdditionalLibraryDirectories>$(SolutionDir)dependencies/glfw/lib/;$(SolutionDir)dependencies/glew/lib/Release/$(Platform);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>opengl32.lib;glew32.lib;glfw3.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(SolutionDir)dependencies/glfw/lib/$(Platform);$(SolutionDir)dependencies/glew/lib/Release/$(Platform);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>opengl32.lib;glew32.lib;glfw3dll.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
-      <Command>xcopy "$(SolutionDir)dependencies\glfw\lib\*.dll" "$(OutputPath)" /Y
+      <Command>xcopy "$(SolutionDir)dependencies\glfw\lib\$(Platform)\*.dll" "$(OutputPath)" /Y
 xcopy "$(SolutionDir)dependencies\glew\bin\Release\$(Platform)\*.dll" "$(OutputPath)" /Y</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
@@ -120,11 +123,11 @@ xcopy "$(SolutionDir)dependencies\glew\bin\Release\$(Platform)\*.dll" "$(OutputP
       <SubSystem>Console</SubSystem>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
-      <AdditionalLibraryDirectories>$(SolutionDir)dependencies/glfw/lib/;$(SolutionDir)dependencies/glew/lib/Release/$(Platform);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>opengl32.lib;glew32.lib;glfw3.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(SolutionDir)dependencies/glfw/lib/$(Platform);$(SolutionDir)dependencies/glew/lib/Release/$(Platform);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>opengl32.lib;glew32.lib;glfw3dll.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
-      <Command>xcopy "$(SolutionDir)dependencies\glfw\lib\*.dll" "$(OutputPath)" /Y
+      <Command>xcopy "$(SolutionDir)dependencies\glfw\lib\$(Platform)\*.dll" "$(OutputPath)" /Y
 xcopy "$(SolutionDir)dependencies\glew\bin\Release\$(Platform)\*.dll" "$(OutputPath)" /Y</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
@@ -142,17 +145,14 @@ xcopy "$(SolutionDir)dependencies\glew\bin\Release\$(Platform)\*.dll" "$(OutputP
       <SubSystem>Console</SubSystem>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
-      <AdditionalLibraryDirectories>$(SolutionDir)dependencies/glfw/lib/;$(SolutionDir)dependencies/glew/lib/Release/$(Platform);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>opengl32.lib;glew32.lib;glfw3.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(SolutionDir)dependencies/glfw/lib/$(Platform);$(SolutionDir)dependencies/glew/lib/Release/$(Platform);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>opengl32.lib;glew32.lib;glfw3dll.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
-      <Command>xcopy "$(SolutionDir)dependencies\glfw\lib\*.dll" "$(OutputPath)" /Y
+      <Command>xcopy "$(SolutionDir)dependencies\glfw\lib\$(Platform)\*.dll" "$(OutputPath)" /Y
 xcopy "$(SolutionDir)dependencies\glew\bin\Release\$(Platform)\*.dll" "$(OutputPath)" /Y</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
-  <ItemGroup>
-    <ClCompile Include="StartingOpenGL.cpp" />
-  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>

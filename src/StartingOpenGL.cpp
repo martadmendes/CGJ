@@ -80,7 +80,7 @@ static void error(GLenum source, GLenum type, GLuint id, GLenum severity, GLsize
 void setupErrorCallback()
 {
 	glEnable(GL_DEBUG_OUTPUT);
-	//glDebugMessageCallback(error, 0);
+	glDebugMessageCallback(error, 0);
 	glEnable(GL_DEBUG_OUTPUT_SYNCHRONOUS);
 	glDebugMessageControl(GL_DONT_CARE, GL_DONT_CARE, GL_DONT_CARE, 0, 0, GL_TRUE);
 	// params: source, type, severity, count, ids, enabled
@@ -322,7 +322,7 @@ void run(GLFWwindow* win)
 		glfwSwapBuffers(win);
 		glfwPollEvents();
 
-		checkOpenGLError("ERROR: MAIN/RUN");
+		//checkOpenGLError("ERROR: MAIN/RUN");
 	}
 	glfwDestroyWindow(win);
 	glfwTerminate();
