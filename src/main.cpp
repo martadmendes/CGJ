@@ -25,6 +25,9 @@
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
 
+#include "math/vec2.hpp"
+#include "math/vec3.hpp"
+#include "math/vec4.hpp"
 
 ///////////////////////////////////////////////////////////////////// CALLBACKS
 
@@ -321,16 +324,31 @@ void run(GLFWwindow* win)
 	glfwTerminate();
 }
 
+/////////////////////////////////////////////////////////////////////////// TESTS
+
+void tests() {
+
+	math::vec3 v1 = math::vec3(1, 0, 0);
+	math::vec3 v2 = math::vec3(0, 2, 0);
+	math::vec3 v3 = math::vec3(0, 0, 3);
+	
+	//case 1
+
+
+}
+
 ////////////////////////////////////////////////////////////////////////// MAIN
 
 int main(int argc, char* argv[])
 {
-	int gl_major = 4, gl_minor = 3;
-	int is_fullscreen = 0;
-	int is_vsync = 1;
-	GLFWwindow* win = setup(gl_major, gl_minor, 
-		640, 480, "OpenGL Viewer (GLFW)", is_fullscreen, is_vsync);
-	run(win);
+	//int gl_major = 4, gl_minor = 3;
+	//int is_fullscreen = 0;
+	//int is_vsync = 1;
+	//GLFWwindow* win = setup(gl_major, gl_minor, 
+	//	640, 480, "OpenGL Viewer (GLFW)", is_fullscreen, is_vsync);
+	//run(win);
+	tests();
+	while(true){} //so the console is kept open
 	exit(EXIT_SUCCESS);
 }
 
