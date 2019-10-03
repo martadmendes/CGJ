@@ -69,6 +69,7 @@ math::vec3& math::vec3::operator/=(const vec3& v) {
 	x /= v.x;
 	x /= v.y;
 	x /= v.z;
+	return *this;
 }
 
 const math::vec3 math::operator+(const vec3& v1, const vec3& v2) {
