@@ -22,7 +22,6 @@ namespace math {
 		float* data();
 		const float quadrance() const;
 		const float magnitude() const;
-		friend const vec3 normalize(const vec3& v);
 		float dotProduct(vec3 v1, vec3 v2);
 		vec3 crossProduct(vec3 v1, vec3 v2);
 

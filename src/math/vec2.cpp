@@ -1,6 +1,6 @@
 #include "vec2.hpp"
 
-math::vec2::vec2() : x(0.0f), y(0.0f) {} //assim ou construtor vazio mm?
+math::vec2::vec2() : x(0.0f), y(0.0f) {}
 
 math::vec2::vec2(const float k) : x(k), y(k) {}
 
@@ -15,8 +15,9 @@ void math::vec2::clean() {
 	y = 0.0f;
 }
 
-float* math::vec2::data() {  //whaaaat
-	return nullptr;
+float* math::vec2::data() {  
+	float data[2] = { x, y };
+	return data;
 }
 
 const float math::vec2::quadrance() const {
@@ -31,48 +32,48 @@ float math::vec2::dotProduct(vec2 v1, vec2 v2) {
 	return v1.x*v2.x + v1.y*v2.y;
 }
 
-const vec2 math::vec2::operator-() const {
+const math::vec2 math::vec2::operator-() const {
 	return vec2(-x, -y);
 }
 
-vec2& math::vec2::operator=(const vec2& v) {
+math::vec2& math::vec2::operator=(const vec2& v) {
 	x = v.x;
 	y = v.y;
 	return *this;
 }
 
-vec2& math::vec2::operator+=(const vec2& v) {
+math::vec2& math::vec2::operator+=(const vec2& v) {
 	x += v.x;
 	y += v.y;
 	return *this;
 }
 
-vec2& math::vec2::operator-=(const vec2& v) {
+math::vec2& math::vec2::operator-=(const vec2& v) {
 	x -= v.x;
 	y -= v.y;
 	return *this;
 }
 
-vec2& math::vec2::operator*=(const vec2& v) {
+math::vec2& math::vec2::operator*=(const vec2& v) {
 	x *= v.x;
 	y *= v.y;
 	return *this;
 }
 
-const vec2 math::operator+(const vec2& v1, const vec2& v2) {
+const math::vec2 math::operator+(const vec2& v1, const vec2& v2) {
 	return vec2(v1.x+v2.x, v1.y+v2.y);
 }
 
-const vec2 math::operator-(const vec2& v1, const vec2& v2) {
+const math::vec2 math::operator-(const vec2& v1, const vec2& v2) {
 	return vec2(v1.x-v2.x, v1.y-v2.y);
 }
 
-const vec2 math::operator*(const vec2& v, const float k) {
+const math::vec2 math::operator*(const vec2& v, const float k) {
 	return vec2(v.x*k, v.y*k);
 }
 
-const vec2 math::operator*(const float k, const vec2& v) {
-	return vec2(k*v.x, k*v.y);
+const math::vec2 math::operator*(const float k, const vec2& v) {
+	return v * k;
 }
 
 const bool math::operator==(const vec2& v1, const vec2& v2) {
@@ -95,8 +96,8 @@ std::ostream& math::operator<<(std::ostream& os, const vec2& v) {
 }
 
 std::istream& math::operator>>(std::istream& is, vec2& v) {
-	in >> v.x;
-	in >> v.y;
-	return in;
+	is >> v.x;
+	is >> v.y;
+	return is;
 }
 

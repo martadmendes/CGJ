@@ -8,12 +8,12 @@ namespace math {
 	class vec4 {
 	public:
 		//attributes
-		float x, y, z;
+		float x, y, z, w;
 
 		//methods
 		vec4();
 		vec4(const float k);
-		vec4(const float x, const float y, const float z);
+		vec4(const float x, const float y, const float z, const float w);
 		vec4(const vec4& v);
 		~vec4();
 
@@ -21,9 +21,8 @@ namespace math {
 		float* data();
 		const float quadrance() const;
 		const float magnitude() const;
-		friend const vec4 normalize(const vec4& v);
-		float dotProduct(vec4 v1, vec4 v2);
-		vec4 crossProduct(vec4 v1, vec4 v2);
+		static float dotProduct(vec4 v1, vec4 v2);
+		static vec4 crossProduct(vec4 v1, vec4 v2);
 
 		const vec4 operator - () const;
 		vec4& operator = (const vec4& v);
