@@ -27,19 +27,11 @@ const float math::vec4::quadrance() const {
 }
 
 const float math::vec4::magnitude() const {
-	return sqrt(magnitude());
+	return sqrt(quadrance());
 }
 
 const math::vec4 math::vec4::normalize() const {   
 	return *this/(*this).magnitude();
-}
-
-float math::vec4::dotProduct(vec4 v1, vec4 v2) {
-	return v1.x*v2.x + v1.y*v2.y + v1.z + v2.z;
-}
-
-math::vec4 math::vec4::crossProduct(vec4 v1, vec4 v2) {
-	return vec4((v1.y * v2.z - v1.z * v2.y), (v1.z * v2.x - v1.x * v2.z), (v1.x * v2.y - v1.y * v2.x), v1.w);  //qual w, v1 ou v2 hmm
 }
 
 const math::vec4 math::vec4::operator-() const {

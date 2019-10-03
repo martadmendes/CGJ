@@ -23,7 +23,6 @@ namespace math {
 		const float quadrance() const;
 		const float magnitude() const;
 		const vec2 normalize() const;
-		float dotProduct(vec2 v1, vec2 v2);
 
 		const vec2 operator - () const;
 		vec2& operator = (const vec2& v);
@@ -40,6 +39,10 @@ namespace math {
 		friend const bool operator != (const vec2& v1, const vec2& v2);
 		friend std::ostream& operator << (std::ostream& os, const vec2& v);
 		friend std::istream& operator >> (std::istream& is, vec2& v);
+
+		static float dotProduct(vec2 v1, vec2 v2) {
+			return v1.x * v2.x + v1.y * v2.y;
+		}
 
 	};
 

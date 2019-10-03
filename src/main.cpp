@@ -333,8 +333,8 @@ int main(int argc, char* argv[])
 		640, 480, "OpenGL Viewer (GLFW)", is_fullscreen, is_vsync);
 	run(win);*/
 	vec2_tests();
-	//vec3_tests();
-	//vec4_tests();
+	vec3_tests();
+	vec4_tests();
 	while (true); //so the console is kept open
 
 	exit(EXIT_SUCCESS);

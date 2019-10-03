@@ -32,10 +32,6 @@ const math::vec2 math::vec2::normalize() const {
 	return *this/(*this).magnitude();
 }
 
-float math::vec2::dotProduct(vec2 v1, vec2 v2) {
-	return v1.x*v2.x + v1.y*v2.y;
-}
-
 const math::vec2 math::vec2::operator-() const {
 	return vec2(-x, -y);
 }
