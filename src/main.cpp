@@ -332,9 +332,7 @@ int main(int argc, char* argv[])
 	GLFWwindow* win = setup(gl_major, gl_minor, 
 		640, 480, "OpenGL Viewer (GLFW)", is_fullscreen, is_vsync);
 	run(win);*/
-	std::cout << "teste" << std::endl;
 	vec2_tests();
-	std::cout << "depois" << std::endl;
 	//vec3_tests();
 	//vec4_tests();
 	while (true); //so the console is kept open
