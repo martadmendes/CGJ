@@ -28,6 +28,10 @@ const float math::vec2::magnitude() const {
 	return sqrt(quadrance());
 }
 
+const math::vec2 math::vec2::normalize() const {
+	return *this/(*this).magnitude();
+}
+
 float math::vec2::dotProduct(vec2 v1, vec2 v2) {
 	return v1.x*v2.x + v1.y*v2.y;
 }
@@ -60,6 +64,12 @@ math::vec2& math::vec2::operator*=(const vec2& v) {
 	return *this;
 }
 
+math::vec2& math::vec2::operator/=(const vec2& v) {
+	x /= v.x;
+	y /= v.y;
+	return *this;
+}
+
 const math::vec2 math::operator+(const vec2& v1, const vec2& v2) {
 	return vec2(v1.x+v2.x, v1.y+v2.y);
 }
@@ -76,18 +86,16 @@ const math::vec2 math::operator*(const float k, const vec2& v) {
 	return v * k;
 }
 
+const math::vec2 math::operator/(const vec2& v, const float k) {
+	return vec2(v.x / k, v.y / k);
+}
+
 const bool math::operator==(const vec2& v1, const vec2& v2) {
-	if (v1.x == v2.x && v1.y == v2.y)
-		return true;
-	else
-		return false;
+	return (v1.x == v2.x && v1.y == v2.y);
 }
 
 const bool math::operator!=(const vec2& v1, const vec2& v2) {
-	if (v1.x != v2.x || v1.y != v2.y)
-		return true;
-	else
-		return false;
+	return (v1.x != v2.x || v1.y != v2.y);
 }
 
 std::ostream& math::operator<<(std::ostream& os, const vec2& v) {

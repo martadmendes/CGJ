@@ -29,6 +29,10 @@ const float math::vec3::magnitude() const {
 	return sqrt(quadrance());
 }
 
+const math::vec3 math::vec3::normalize() const {
+	return *this/(*this).magnitude();
+}
+
 float math::vec3::dotProduct(vec3 v1, vec3 v2) {
 	return v1.x*v2.x + v1.y*v2.y + v1.z*v2.z;
 }
@@ -69,6 +73,12 @@ math::vec3& math::vec3::operator*=(const vec3& v) {
 	return *this;
 }
 
+math::vec3& math::vec3::operator/=(const vec3& v) {
+	x /= v.x;
+	x /= v.y;
+	x /= v.z;
+}
+
 const math::vec3 math::operator+(const vec3& v1, const vec3& v2) {
 	return vec3(v1.x+v2.x, v1.y+v2.y, v1.z+v2.z);
 }
@@ -85,18 +95,16 @@ const math::vec3 math::operator*(const float k, const vec3& v) {
 	return v * k;
 }
 
+const math::vec3 math::operator/(const vec3& v, const float k) {
+	return vec3(v.x / k, v.y / k, v.z / k);
+}
+
 const bool math::operator==(const vec3& v1, const vec3& v2) {
-	if (v1.x == v2.x && v1.y == v2.y && v1.z == v2.z)
-		return true;
-	else
-		return false;
+	return (v1.x == v2.x && v1.y == v2.y && v1.z == v2.z);
 }
 
 const bool math::operator!=(const vec3& v1, const vec3& v2) {
-	if (v1.x != v2.x || v1.y != v2.y || v1.z != v2.z)
-		return true;
-	else
-		return false;
+	return (v1.x != v2.x || v1.y != v2.y || v1.z != v2.z);
 }
 
 std::ostream& math::operator<<(std::ostream& os, const vec3& v) {

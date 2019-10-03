@@ -30,6 +30,10 @@ const float math::vec4::magnitude() const {
 	return sqrt(magnitude());
 }
 
+const math::vec4 math::vec4::normalize() const {   
+	return *this/(*this).magnitude();
+}
+
 float math::vec4::dotProduct(vec4 v1, vec4 v2) {
 	return v1.x*v2.x + v1.y*v2.y + v1.z + v2.z;
 }
@@ -71,6 +75,13 @@ math::vec4& math::vec4::operator*=(const vec4& v) {
 	return *this;
 }
 
+math::vec4& math::vec4::operator/=(const vec4& v) {
+	x /= v.x;
+	y /= v.y;
+	z /= v.z;
+	return *this;
+}
+
 const math::vec4 math::operator+(const vec4& v1, const vec4& v2) {
 	return vec4(v1.x + v2.x, v1.y + v2.y, v1.z + v2.z, v1.w);
 }
@@ -87,18 +98,16 @@ const math::vec4 math::operator*(const float k, const vec4& v) {
 	return v * k;
 }
 
+const math::vec4 math::operator/(const vec4& v, const float k) {
+	return vec4(v.x / k, v.y / k, v.z / k, v.w);
+}
+
 const bool math::operator==(const vec4& v1, const vec4& v2) {
-	if (v1.x == v2.x && v1.y == v2.y && v1.z == v2.z && v1.w == v2.w)
-		return true;
-	else
-		return false;
+	return (v1.x == v2.x && v1.y == v2.y && v1.z == v2.z && v1.w == v2.w);
 }
 
 const bool math::operator!=(const vec4& v1, const vec4& v2) {
-	if (v1.x != v2.x || v1.y != v2.y || v1.z != v2.z || v1.w != v2.w)
-		return true;
-	else
-		return false; //ou só return !operator==(v1,v2);
+	return (v1.x != v2.x || v1.y != v2.y || v1.z != v2.z || v1.w != v2.w); //ou só return !operator==(v1,v2);
 }
 
 std::ostream& math::operator<<(std::ostream& os, const vec4& v) {
