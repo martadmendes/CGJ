@@ -1,4 +1,5 @@
 #include "vec3.hpp"
+#define LIMIT 0.00001f
 
 math::vec3::vec3() : x(0.0f), y(0.0f), z(0.0f) {}
 
@@ -81,7 +82,7 @@ const math::vec3 math::operator-(const vec3& v1, const vec3& v2) {
 }
 
 const math::vec3 math::operator*(const vec3& v, const float k) {
-	return vec3(v.x*k, v.y*k, v.z*k);  //nao basta return v*k ou k*v ?
+	return vec3(v.x*k, v.y*k, v.z*k);
 }
 
 const math::vec3 math::operator*(const float k, const vec3& v) {
@@ -93,11 +94,11 @@ const math::vec3 math::operator/(const vec3& v, const float k) {
 }
 
 const bool math::operator==(const vec3& v1, const vec3& v2) {
-	return (v1.x == v2.x && v1.y == v2.y && v1.z == v2.z);
+	return (abs(v1.x - v2.x) < LIMIT && abs(v1.y - v2.y) < LIMIT && abs(v1.z - v2.z) < LIMIT);
 }
 
 const bool math::operator!=(const vec3& v1, const vec3& v2) {
-	return (v1.x != v2.x || v1.y != v2.y || v1.z != v2.z);
+	return (abs(v1.x - v2.x) >= LIMIT || abs(v1.y - v2.y) >= LIMIT || abs(v1.z - v2.z) >= LIMIT);
 }
 
 std::ostream& math::operator<<(std::ostream& os, const vec3& v) {

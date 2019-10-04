@@ -1,4 +1,6 @@
 #include "vec4.hpp"
+#define LIMIT 0.00001f
+
 
 math::vec4::vec4() : x(0.0f), y(0.0f), z(0.0f), w(1.0f) {}
 
@@ -95,11 +97,11 @@ const math::vec4 math::operator/(const vec4& v, const float k) {
 }
 
 const bool math::operator==(const vec4& v1, const vec4& v2) {
-	return (v1.x == v2.x && v1.y == v2.y && v1.z == v2.z && v1.w == v2.w);
+	return (abs(v1.x - v2.x) < LIMIT && abs(v1.y - v2.y) < LIMIT && abs(v1.z - v2.z) < LIMIT && v1.w == v2.w);
 }
 
 const bool math::operator!=(const vec4& v1, const vec4& v2) {
-	return (v1.x != v2.x || v1.y != v2.y || v1.z != v2.z || v1.w != v2.w); //ou só return !operator==(v1,v2);
+	return (abs(v1.x - v2.x) >= LIMIT || abs(v1.y - v2.y) >= LIMIT || abs(v1.z - v2.z) >= LIMIT || v1.w != v2.w);
 }
 
 std::ostream& math::operator<<(std::ostream& os, const vec4& v) {

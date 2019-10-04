@@ -1,4 +1,5 @@
 #include "vector_unit_tests.hpp"
+#include <ctime>
 
 ////////// VECTOR 2 TESTS //////////
 void vec2_tests() {	
@@ -139,4 +140,42 @@ void vec4_tests() {
 	std::cout << "v2: " << v2 << std::endl;
 	std::cout << "v3: " << v3 << std::endl;
 	std::cout << "v2 x v3 = " << math::vec4::crossProduct(v2, v3) << "\n \n" << std::endl;
+}
+
+inline float random_float_1() {
+	return static_cast<float>(rand()) / static_cast<float>(RAND_MAX / 2.0f) - 1.0f;
+}
+
+void aula01() {
+	std::cout << "***TESTE AULA***" << std::endl; //vector triple product
+
+	srand(static_cast<unsigned> (time(0)));
+	math::vec3 i;
+	math::vec3 j;
+	math::vec3 k;
+
+	for (int m = 0; m < 9; m++) {
+		i = math::vec3(random_float_1(), random_float_1(), random_float_1());
+		j = math::vec3(random_float_1(), random_float_1(), random_float_1());
+		k = math::vec3(random_float_1(), random_float_1(), random_float_1());
+
+		std::cout << "Test " << m + 1 << ":" << std::endl;
+		std::cout << "i: " << i << std::endl;
+		std::cout << "j: " << j << std::endl;
+		std::cout << "k: " << k << std::endl;
+		std::cout << "i x (j x k) == j * (i dot k) - k * (i dot j)  " << 
+			(math::vec3::crossProduct(i, math::vec3::crossProduct(j, k)) == (j * (math::vec3::dotProduct(i, k))) - (k * (math::vec3::dotProduct(i, j)))) << "\n" << std::endl;
+	}
+	
+	i = math::vec3(0, 0, 0);
+	j = math::vec3(0, 0, 0);
+	k = math::vec3(0, 0, 0);
+
+	std::cout << "Test null vector: " << std::endl;
+	std::cout << "i: " << i << std::endl;
+	std::cout << "j: " << j << std::endl;
+	std::cout << "k: " << k << std::endl;
+	std::cout << "i x (j x k) == j * (i dot k) - k * (i dot j)  " <<
+		(math::vec3::crossProduct(i, math::vec3::crossProduct(j, k)) == (j * (math::vec3::dotProduct(i, k))) - (k * (math::vec3::dotProduct(i, j)))) << "\n" << std::endl;
+
 }

@@ -335,6 +335,7 @@ int main(int argc, char* argv[])
 	vec2_tests();
 	vec3_tests();
 	vec4_tests();
+	aula01();
 	while (true); //so the console is kept open
 
 	exit(EXIT_SUCCESS);

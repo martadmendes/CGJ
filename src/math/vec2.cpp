@@ -1,4 +1,5 @@
 #include "vec2.hpp"
+#define LIMIT 0.00001f
 
 math::vec2::vec2() : x(0.0f), y(0.0f) {}
 
@@ -87,11 +88,11 @@ const math::vec2 math::operator/(const vec2& v, const float k) {
 }
 
 const bool math::operator==(const vec2& v1, const vec2& v2) {
-	return (v1.x == v2.x && v1.y == v2.y);
+	return (abs(v1.x - v2.x) < LIMIT && abs(v1.y - v2.y) < LIMIT);
 }
 
 const bool math::operator!=(const vec2& v1, const vec2& v2) {
-	return (v1.x != v2.x || v1.y != v2.y);
+	return (abs(v1.x - v2.x) >= LIMIT || abs(v1.y - v2.y) >= LIMIT);
 }
 
 std::ostream& math::operator<<(std::ostream& os, const vec2& v) {
