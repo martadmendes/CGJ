@@ -20,12 +20,20 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\main.cpp" />
+    <ClCompile Include="src\math\matrix2.cpp" />
+    <ClCompile Include="src\math\matrix3.cpp" />
+    <ClCompile Include="src\math\matrix4.cpp" />
+    <ClCompile Include="src\math\tests\matrix_unit_tests.cpp" />
     <ClCompile Include="src\math\tests\vector_unit_tests.cpp" />
     <ClCompile Include="src\math\vec2.cpp" />
     <ClCompile Include="src\math\vec3.cpp" />
     <ClCompile Include="src\math\vec4.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\math\matrix2.hpp" />
+    <ClInclude Include="src\math\matrix3.hpp" />
+    <ClInclude Include="src\math\matrix4.hpp" />
+    <ClInclude Include="src\math\tests\matrix_unit_tests.hpp" />
     <ClInclude Include="src\math\tests\vector_unit_tests.hpp" />
     <ClInclude Include="src\math\vec2.hpp" />
     <ClInclude Include="src\math\vec3.hpp" />
