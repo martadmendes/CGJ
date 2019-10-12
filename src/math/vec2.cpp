@@ -12,8 +12,10 @@ math::vec2::vec2(const vec2& v) : x(v.x), y(v.y) {}
 math::vec2::~vec2() {}
 
 void math::vec2::clean() {
-	x = 0.0f;
-	y = 0.0f;
+	if (x <= LIMIT)
+		x = 0;
+	if (y <= LIMIT)
+		y = 0;
 }
 
 float* math::vec2::data() {  

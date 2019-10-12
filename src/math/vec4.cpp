@@ -13,10 +13,13 @@ math::vec4::vec4(const vec4& v) : x(v.x), y(v.y), z(v.z), w(v.w) {}
 math::vec4::~vec4() {}
 
 void math::vec4::clean() {
-	x = 0.0f;
-	y = 0.0f;
-	z = 0.0f;
-	w = 1.0f;
+	if (x <= LIMIT)
+		x = 0;
+	if (y <= LIMIT)
+		y = 0;
+	if (z <= LIMIT)
+		z = 0;
+	//no touchy the homogenous coordinate
 }
 
 float* math::vec4::data() { 

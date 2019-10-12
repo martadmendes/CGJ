@@ -33,13 +33,13 @@
     <ClCompile Include="src\math\tests\matrix_unit_tests.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\math\matrix2.cpp">
+    <ClCompile Include="src\math\mat3.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\math\matrix3.cpp">
+    <ClCompile Include="src\math\mat2.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\math\matrix4.cpp">
+    <ClCompile Include="src\math\mat4.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -59,13 +59,13 @@
     <ClInclude Include="src\math\tests\matrix_unit_tests.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\math\matrix2.hpp">
+    <ClInclude Include="src\math\mat3.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\math\matrix3.hpp">
+    <ClInclude Include="src\math\mat2.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\math\matrix4.hpp">
+    <ClInclude Include="src\math\mat4.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

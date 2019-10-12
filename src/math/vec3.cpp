@@ -12,9 +12,12 @@ math::vec3::vec3(const vec3& v) : x(v.x), y(v.y), z(v.z) {}
 math::vec3::~vec3() {}
 
 void math::vec3::clean() {
-	x = 0.0f;
-	y = 0.0f;
-	z = 0.0f;
+	if (x <= LIMIT)
+		x = 0;
+	if (y <= LIMIT)
+		y = 0;
+	if (z <= LIMIT)
+		z = 0;
 }
 
 float* math::vec3::data() {

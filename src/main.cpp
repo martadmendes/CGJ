@@ -26,6 +26,7 @@
 #include <GLFW/glfw3.h>
 
 #include "math/tests/vector_unit_tests.hpp"
+#include "math/tests/matrix_unit_tests.hpp"
 
 ///////////////////////////////////////////////////////////////////// CALLBACKS
 
