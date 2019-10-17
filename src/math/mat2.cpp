@@ -7,7 +7,12 @@ math::mat2::mat2(const float k) : data{ k, 0.0f, 0.0f, k } {}
 
 math::mat2::mat2(const float m0, const float m1, const float m2, const float m3) : data{ m0, m1, m2, m3 } {}
 
-math::mat2::mat2(const mat2& m) : data{ m.data[0], m.data[1], m.data[2], m.data[3] } {}
+math::mat2::mat2(const mat2& m) {
+	m.transpose();
+	for (int i = 0; i <= 3; i++) {
+		data[i] = m.data[i];
+	}
+}
 
 void math::mat2::clean() {
 	for (float f : data) {
@@ -26,7 +31,12 @@ math::mat2 math::mat2::transpose() const {
 }
 
 math::mat2 math::mat2::inverse() const {
-	return mat2();
+	float det = determinant();
+
+	if (det == 0) {
+		throw std::exception("For the inverse to exist, the determinant can't be 0.");
+	}
+	return mat2(data[3] / det, -data[1] / det, -data[2] / det, data[0] / det);
 }
 
 math::mat2& math::mat2::operator=(const mat2& m) {

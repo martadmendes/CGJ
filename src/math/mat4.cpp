@@ -16,10 +16,12 @@ math::mat4::mat4(const float m0, const float m1, const float m2, const float m3,
 																							 m8, m9, m10, m11, 
 																							 m12, m13, m14, m15 } {}
 
-math::mat4::mat4(const mat4& m) : data{ m.data[0], m.data[1], m.data[2], m.data[3], 
-										m.data[4], m.data[5], m.data[6], m.data[7], 
-										m.data[8], m.data[9], m.data[10], m.data[11],
-										m.data[12], m.data[13], m.data[14], m.data[15] } {}
+math::mat4::mat4(const mat4& m) {
+	m.transpose();
+	for (int i = 0; i <= 15; i++) {
+		data[i] = m.data[i];
+	}
+}
 
 void math::mat4::clean() {
 	for (float f : data) {

@@ -2,8 +2,8 @@
 #include <iostream>
 #include <sstream>
 #include <string>
-#include "vec3.hpp"
 #include "mat2.hpp"
+#include "vec3.hpp"
 
 namespace math {
 
@@ -22,6 +22,7 @@ namespace math {
 		float determinant() const;
 		mat3 transpose() const;
 		mat3 inverse() const;
+		mat3 adjugate_matrix(mat3 m);
 		mat3& operator = (const mat3& m);
 		mat3& operator += (const mat3& m);
 		mat3& operator -= (const mat3& m);

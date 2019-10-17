@@ -333,10 +333,13 @@ int main(int argc, char* argv[])
 	GLFWwindow* win = setup(gl_major, gl_minor, 
 		640, 480, "OpenGL Viewer (GLFW)", is_fullscreen, is_vsync);
 	run(win);*/
-	vec2_tests();
-	vec3_tests();
-	vec4_tests();
-	aula01();
+	//vec2_tests();
+	//vec3_tests();
+	//vec4_tests();
+	//aula01();
+	mat2_tests();
+	mat3_tests();
+	mat4_tests();
 	while (true); //so the console is kept open
 
 	exit(EXIT_SUCCESS);

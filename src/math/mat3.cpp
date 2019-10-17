@@ -9,9 +9,12 @@ math::mat3::mat3(const float m0, const float m1, const float m2,
 	const float m3, const float m4, const float m5, 
 	const float m6, const float m7, const float m8) : data{ m0, m1, m2, m3, m4, m5, m6, m7, m8 } {}
 
-math::mat3::mat3(const mat3& m) : data{ m.data[0], m.data[1], m.data[2], 
-										m.data[3], m.data[4], m.data[5], 
-										m.data[6], m.data[7], m.data[8] } {}
+math::mat3::mat3(const mat3& m) {
+	m.transpose();
+	for (int i = 0; i <= 8; i++) {
+		data[i] = m.data[i];
+ 	}
+}
 
 void math::mat3::clean() {
 	for (float f : data) {
@@ -34,7 +37,37 @@ math::mat3 math::mat3::transpose() const {
 }
 
 math::mat3 math::mat3::inverse() const {
-	return mat3();
+	float det = determinant();
+
+
+	if (det == 0) {
+		throw std::exception("For the inverse to exist, the determinant can't be 0.");
+	}
+
+}
+
+math::mat3 math::mat3::adjugate_matrix(mat3 m) {
+	mat2 m0 = mat2(m.data[4], m.data[5], m.data[7], m.data[8]);
+	mat2 m1 = mat2(m.data[3], m.data[5], m.data[6], m.data[8]);
+	mat2 m2 = mat2(m.data[3], m.data[4], m.data[6], m.data[7]);
+	mat2 m3 = mat2(m.data[1], m.data[2], m.data[7], m.data[8]);
+	mat2 m4 = mat2(m.data[0], m.data[2], m.data[6], m.data[8]);
+	mat2 m5 = mat2(m.data[0], m.data[1], m.data[6], m.data[7]);
+	mat2 m6 = mat2(m.data[1], m.data[2], m.data[4], m.data[5]);
+	mat2 m7 = mat2(m.data[0], m.data[2], m.data[3], m.data[5]);
+	mat2 m8 = mat2(m.data[0], m.data[1], m.data[3], m.data[4]);
+
+	mat3 cofactors = mat3(m0.determinant(), m1.determinant(), m2.determinant(),
+								m3.determinant(), m4.determinant(), m5.determinant(),
+								m6.determinant(), m7.determinant(), m8.determinant());
+
+	//multiply certain elements by -1 to get the adjugate matrix
+	cofactors.data[1] *= -1;
+	cofactors.data[3] *= -1;
+	cofactors.data[5] *= -1;
+	cofactors.data[7] *= -1;
+
+	return cofactors; 
 }
 
 math::mat3& math::mat3::operator=(const mat3& m) {
