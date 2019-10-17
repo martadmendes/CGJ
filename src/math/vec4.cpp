@@ -2,7 +2,7 @@
 #define LIMIT 0.00001f
 
 
-math::vec4::vec4() : x(0.0f), y(0.0f), z(0.0f), w(1.0f) {}
+math::vec4::vec4() : x(0.0f), y(0.0f), z(0.0f), w(0.0f) {}
 
 math::vec4::vec4(const float k) : x(k), y(k), z(k), w(1.0f) {}
 
@@ -19,7 +19,8 @@ void math::vec4::clean() {
 		y = 0;
 	if (z <= LIMIT)
 		z = 0;
-	//no touchy the homogenous coordinate
+	if (w <= LIMIT)
+		w = 0;
 }
 
 float* math::vec4::data() { 
@@ -28,7 +29,7 @@ float* math::vec4::data() {
 }
 
 const float math::vec4::quadrance() const {
-	return x * x + y * y + z * z;
+	return x * x + y * y + z * z + w * w;
 }
 
 const float math::vec4::magnitude() const {
@@ -40,7 +41,7 @@ const math::vec4 math::vec4::normalize() const {
 }
 
 const math::vec4 math::vec4::operator-() const {
-	return vec4(-x, -y, -z, w);
+	return vec4(-x, -y, -z, -w);
 }
 
 math::vec4& math::vec4::operator=(const vec4& v) {
@@ -55,6 +56,7 @@ math::vec4& math::vec4::operator+=(const vec4& v) {
 	x += v.x;
 	y += v.y;
 	z += v.z;
+	w += v.w;
 	return *this;
 }
 
@@ -62,6 +64,7 @@ math::vec4& math::vec4::operator-=(const vec4& v) {
 	x -= v.x;
 	y -= v.y;
 	z -= v.z;
+	w -= v.w;
 	return *this;
 }
 
@@ -69,6 +72,7 @@ math::vec4& math::vec4::operator*=(const vec4& v) {
 	x *= v.x;
 	y *= v.y;
 	z *= v.z;
+	w *= v.w;
 	return *this;
 }
 
@@ -76,19 +80,20 @@ math::vec4& math::vec4::operator/=(const vec4& v) {
 	x /= v.x;
 	y /= v.y;
 	z /= v.z;
+	w /= v.w;
 	return *this;
 }
 
 const math::vec4 math::operator+(const vec4& v1, const vec4& v2) {
-	return vec4(v1.x + v2.x, v1.y + v2.y, v1.z + v2.z, v1.w);
+	return vec4(v1.x + v2.x, v1.y + v2.y, v1.z + v2.z, v1.w + v2.w);
 }
 
 const math::vec4 math::operator-(const vec4& v1, const vec4& v2) {
-	return vec4(v1.x - v2.x, v1.y - v2.y, v1.z - v2.z, v1.w);
+	return vec4(v1.x - v2.x, v1.y - v2.y, v1.z - v2.z, v1.w - v2.w);
 }
 
 const math::vec4 math::operator*(const vec4& v, const float k) {
-	return vec4(v.x * k, v.y * k, v.z * k, v.w);
+	return vec4(v.x * k, v.y * k, v.z * k, v.w * k);
 }
 
 const math::vec4 math::operator*(const float k, const vec4& v) {
@@ -96,15 +101,15 @@ const math::vec4 math::operator*(const float k, const vec4& v) {
 }
 
 const math::vec4 math::operator/(const vec4& v, const float k) {
-	return vec4(v.x / k, v.y / k, v.z / k, v.w);
+	return vec4(v.x / k, v.y / k, v.z / k, v.w / k);
 }
 
 const bool math::operator==(const vec4& v1, const vec4& v2) {
-	return (abs(v1.x - v2.x) < LIMIT && abs(v1.y - v2.y) < LIMIT && abs(v1.z - v2.z) < LIMIT && v1.w == v2.w);
+	return (abs(v1.x - v2.x) < LIMIT && abs(v1.y - v2.y) < LIMIT && abs(v1.z - v2.z) < LIMIT && abs(v1.w - v2.z) < LIMIT);
 }
 
 const bool math::operator!=(const vec4& v1, const vec4& v2) {
-	return (abs(v1.x - v2.x) >= LIMIT || abs(v1.y - v2.y) >= LIMIT || abs(v1.z - v2.z) >= LIMIT || v1.w != v2.w);
+	return (abs(v1.x - v2.x) >= LIMIT || abs(v1.y - v2.y) >= LIMIT || abs(v1.z - v2.z) >= LIMIT || abs(v1.w - v2.w) >= LIMIT);
 }
 
 std::ostream& math::operator<<(std::ostream& os, const vec4& v) {

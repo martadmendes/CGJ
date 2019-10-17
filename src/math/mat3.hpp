@@ -18,11 +18,10 @@ namespace math {
 			const float m6, const float m7, const float m8);
 		mat3(const mat3& m); //row major constructor
 
-		//clean passa por todos os valores, vê se o valor é menor que o threshold e se sim iguala a zero
 		void clean();
 		float determinant() const;
-		friend mat3 transpose(mat3& m);
-		friend mat3 inverse(mat3& m);
+		mat3 transpose() const;
+		mat3 inverse() const;
 		mat3& operator = (const mat3& m);
 		mat3& operator += (const mat3& m);
 		mat3& operator -= (const mat3& m);

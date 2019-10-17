@@ -15,11 +15,10 @@ namespace math {
 		mat2(const float m0, const float m1, const float m2, const float m3);
 		mat2(const mat2& m); //row major constructor
 
-		//clean passa por todos os valores, vê se o valor é menor que o threshold e se sim iguala a zero
 		void clean();
 		float determinant() const;
-		friend mat2 transpose(mat2& m);
-		friend mat2 inverse(mat2& m);
+		mat2 transpose() const;
+		mat2 inverse() const;
 		mat2& operator = (const mat2& m);
 		mat2& operator += (const mat2& m);
 		mat2& operator -= (const mat2& m);
@@ -33,5 +32,6 @@ namespace math {
 		friend bool operator == (const mat2& m1, const mat2& m2);
 		friend bool operator != (const mat2& m1, const mat2& m2);
 		friend std::ostream& operator << (std::ostream& os, const mat2& m);
+
 	};
 }

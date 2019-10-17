@@ -20,6 +20,15 @@ float math::mat2::determinant() const {
 	return data[0]*data[3] - data[2]*data[1];
 }
 
+math::mat2 math::mat2::transpose() const {
+	return mat2(data[0], data[2], 
+				data[1], data[3]);
+}
+
+math::mat2 math::mat2::inverse() const {
+	return mat2();
+}
+
 math::mat2& math::mat2::operator=(const mat2& m) {
 	for (int i = 0; i <= 3; i++) {
 		data[i] = m.data[i];
@@ -46,14 +55,6 @@ math::mat2& math::mat2::operator*=(const float k) {
 		data[i] *= k;
 	}
 	return *this;
-}
-
-math::mat2 math::transpose(mat2& m) {
-	return mat2(m.data[0], m.data[2], m.data[1], m.data[3]);
-}
-
-math::mat2 math::inverse(mat2& m) {
-	return mat2();
 }
 
 math::mat2 math::operator+(const mat2& m1, const mat2& m2) {

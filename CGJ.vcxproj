@@ -23,6 +23,7 @@
     <ClCompile Include="src\math\mat2.cpp" />
     <ClCompile Include="src\math\mat3.cpp" />
     <ClCompile Include="src\math\mat4.cpp" />
+    <ClCompile Include="src\math\matrix_factory.cpp" />
     <ClCompile Include="src\math\tests\matrix_unit_tests.cpp" />
     <ClCompile Include="src\math\tests\vector_unit_tests.cpp" />
     <ClCompile Include="src\math\vec2.cpp" />
@@ -33,6 +34,7 @@
     <ClInclude Include="src\math\mat2.hpp" />
     <ClInclude Include="src\math\mat3.hpp" />
     <ClInclude Include="src\math\mat4.hpp" />
+    <ClInclude Include="src\math\matrix_factory.hpp" />
     <ClInclude Include="src\math\tests\matrix_unit_tests.hpp" />
     <ClInclude Include="src\math\tests\vector_unit_tests.hpp" />
     <ClInclude Include="src\math\vec2.hpp" />
