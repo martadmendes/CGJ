@@ -17,7 +17,7 @@ namespace math {
 		const static mat3 zero3x3();
 		const static mat4 zero4x4();
 
-		static mat3 dual_matrix(vec3& axis);
+		static mat3 dual_matrix(const vec3& axis);
 
 		static mat4 mat3_to_mat4(mat3& m);
 		static mat3 mat4_to_mat3(mat4& m);

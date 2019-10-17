@@ -21,7 +21,7 @@ namespace math {
 		void clean();
 		float determinant() const;
 		mat3 transpose() const;
-		mat3 inverse() const;
+		mat3 inverse();
 		mat3 adjugate_matrix(mat3 m);
 		mat3& operator = (const mat3& m);
 		mat3& operator += (const mat3& m);

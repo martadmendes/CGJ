@@ -28,10 +28,10 @@ const math::mat4 math::matrix_factory::zero4x4() {
 	return mat4(0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0);
 }
 
-math::mat3 math::matrix_factory::dual_matrix(vec3& axis) {
-	return mat3(0.0f, axis.data[2], -axis.data[1], 
-				-axis.data[2], 0.0, axis.data[0], 
-				axis.data[1], -axis.data[0], 0.0);
+math::mat3 math::matrix_factory::dual_matrix(const vec3& axis) {
+	return mat3(0.0f, axis.z, -axis.y, 
+				-axis.z, 0.0, axis.x, 
+				axis.y, -axis.x, 0.0);
 }
 
 math::mat4 math::matrix_factory::mat3_to_mat4(mat3& m) {

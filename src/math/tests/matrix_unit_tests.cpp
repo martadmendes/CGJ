@@ -4,7 +4,7 @@
 void mat2_tests() {
 	std::cout << "*** MATRIX 2 TESTS *** \n" << std::endl;
 
-	math::mat2 m1 = math::mat2(1, 2, 3, 4);
+	math::mat2 m1 = math::mat2(1, 4, 6, 0);
 	math::mat2 m2 = math::mat2(4, 3, 2, 1);
 	math::vec2 v = math::vec2(1, 2);
 
@@ -72,7 +72,7 @@ void mat2_tests() {
 void mat3_tests() {
 	std::cout << "*** MATRIX 3 TESTS *** \n" << std::endl;
 
-	math::mat3 m1 = math::mat3(1, 2, 3, 1, 2, 3, 1, 2, 3);
+	math::mat3 m1 = math::mat3(1, 2, 2, 3, 1, 5, 1, 2, 3);
 	math::mat3 m2 = math::mat3(3, 2, 1, 3, 2, 1, 3, 2, 1);
 	math::vec3 v = math::vec3(1, 2, 3);
 

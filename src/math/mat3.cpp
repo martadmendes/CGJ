@@ -36,14 +36,16 @@ math::mat3 math::mat3::transpose() const {
 				data[2], data[5], data[8]);
 }
 
-math::mat3 math::mat3::inverse() const {
+math::mat3 math::mat3::inverse() {
 	float det = determinant();
-
 
 	if (det == 0) {
 		throw std::exception("For the inverse to exist, the determinant can't be 0.");
 	}
 
+	mat3 adjugate = adjugate_matrix(transpose());
+	
+	return adjugate * (1 / det);
 }
 
 math::mat3 math::mat3::adjugate_matrix(mat3 m) {
@@ -61,7 +63,7 @@ math::mat3 math::mat3::adjugate_matrix(mat3 m) {
 								m3.determinant(), m4.determinant(), m5.determinant(),
 								m6.determinant(), m7.determinant(), m8.determinant());
 
-	//multiply certain elements by -1 to get the adjugate matrix
+	//multiply specific elements by -1 to get the adjugate matrix
 	cofactors.data[1] *= -1;
 	cofactors.data[3] *= -1;
 	cofactors.data[5] *= -1;
@@ -162,25 +164,8 @@ bool math::operator!=(const mat3& m1, const mat3& m2) {
 }
 
 std::ostream& math::operator<<(std::ostream& os, const mat3& m) {
-	os << "mat3[";
-	int i = 0, j = 0;
-	while (i<=8) {
-		if (i<3) {
-			os << "[";
-		}
-		else if (j == 2) {
-			os << m.data[i] << " ";
-			i + 3;
-		}
-		if (i > 8) {
-			os << "]\n    ";
-			j++;
-			i = j;
-		}
-	}
-
-	/*os << "mat3[" << m.data[0] << " " << m.data[3] << " " << m.data[6] << "\n";
+	os << "mat3[" << m.data[0] << " " << m.data[3] << " " << m.data[6] << "\n";
 	os << "     " << m.data[1] << " " << m.data[4] << " " << m.data[7] << "\n";
-	os << "     " << m.data[2] << " " << m.data[5] << " " << m.data[8] << "]\n";*/
+	os << "     " << m.data[2] << " " << m.data[5] << " " << m.data[8] << "]\n";
 	return os;
 }
