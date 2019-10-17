@@ -97,6 +97,7 @@ math::mat3& math::mat3::operator*=(const float k) {
 	for (int i = 0; i <= 8; i++) {
 		data[i] *= k;
 	}
+	return *this;
 }
 
 math::mat3 math::operator+(const mat3& m1, const mat3& m2) {
