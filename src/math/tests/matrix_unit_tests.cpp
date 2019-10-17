@@ -10,11 +10,11 @@ void mat2_tests() {
 
 	// print identity 2x2 //
 	std::cout << "Identity 2x2: " << std::endl;
-	std::cout << math::matrix_factory::identity2x2 << "\n" << std::endl;
+	std::cout << math::matrix_factory::identity2x2() << "\n" << std::endl;
 
 	// print zero 2x2 //
-	std::cout << "Identity 2x2: " << std::endl;
-	std::cout << math::matrix_factory::zero2x2 << "\n" << std::endl;
+	std::cout << "Zero 2x2: " << std::endl;
+	std::cout << math::matrix_factory::zero2x2() << "\n" << std::endl;
 	
 	// test determinant //
 	std::cout << "Determinant:" << std::endl;
@@ -78,11 +78,11 @@ void mat3_tests() {
 
 	// print identity 3x3 //
 	std::cout << "Identity 3x3: " << std::endl;
-	std::cout << math::matrix_factory::identity3x3 << "\n" << std::endl;
+	std::cout << math::matrix_factory::identity3x3() << "\n" << std::endl;
 
 	// print zero 3x3 //
-	std::cout << "Identity 3x3: " << std::endl;
-	std::cout << math::matrix_factory::zero3x3 << "\n" << std::endl;
+	std::cout << "Zero 3x3: " << std::endl;
+	std::cout << math::matrix_factory::zero3x3() << "\n" << std::endl;
 
 	// test dual matrix //
 	std::cout << "Dual Matrix:" << std::endl;
@@ -158,11 +158,11 @@ void mat4_tests() {
 
 	// print identity 4x4 //
 	std::cout << "Identity 4x4: " << std::endl;
-	std::cout << math::matrix_factory::identity4x4 << "\n" << std::endl;
+	std::cout << math::matrix_factory::identity4x4() << "\n" << std::endl;
 
 	// print zero 4x4 //
-	std::cout << "Identity 4x4: " << std::endl;
-	std::cout << math::matrix_factory::zero4x4 << "\n" << std::endl;
+	std::cout << "Zero 4x4: " << std::endl;
+	std::cout << math::matrix_factory::zero4x4() << "\n" << std::endl;
 
 	// test scale //
 	std::cout << "Scale:" << std::endl;
