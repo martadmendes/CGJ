@@ -1,4 +1,7 @@
 #include "matrix_unit_tests.hpp"
+#include <vector>
+
+#define PI 3.14159265f
 
 ////////// MATRIX 2 TESTS //////////
 void mat2_tests() {
@@ -223,6 +226,16 @@ void mat4_tests() {
 }
 
 
-
 ////////// CLASS EXERCISE //////////
-void aula02() {}
+void aula02() {
+	std::cout << "***TESTE AULA***\n" << std::endl;
+	
+	std::vector<math::vec3> vs = { math::vec3(2,0,0), math::vec3(0,3,0), math::vec3(0,0,4) };
+
+	for (math::vec3& v1 : vs) {
+		for (math::vec3& v2 : vs) {
+			std::cout << math::matrix_factory::rodrigues(90, v1) * v2 << "\n" << std::endl;
+		}
+	}
+
+}

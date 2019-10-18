@@ -74,3 +74,13 @@ math::mat4 math::matrix_factory::rotate(vec3& axis, float angle) {
 	mat4 result = mat3_to_mat4(scale);
 	return result;
 }
+
+math::mat3 math::matrix_factory::rodrigues(const float angle, vec3& axis) {
+	float rad = angle * PI / 180.0;
+
+	mat3 a = dual_matrix(axis.normalize());
+	
+	mat3 result = identity3x3() + sin(rad) * a + (1 - cos(rad)) * (a * a);
+
+	return result;
+}

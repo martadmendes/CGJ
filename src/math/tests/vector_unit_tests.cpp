@@ -146,6 +146,8 @@ inline float random_float_1() {
 	return static_cast<float>(rand()) / static_cast<float>(RAND_MAX / 2.0f) - 1.0f;
 }
 
+
+////////// CLASS EXERCISE //////////
 void aula01() {
 	std::cout << "***TESTE AULA***" << std::endl; //vector triple product
 

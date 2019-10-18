@@ -337,9 +337,10 @@ int main(int argc, char* argv[])
 	//vec3_tests();
 	//vec4_tests();
 	//aula01();
-	mat2_tests();
-	mat3_tests();
-	mat4_tests();
+	//mat2_tests();
+	//mat3_tests();
+	//mat4_tests();
+	aula02();
 	while (true); //so the console is kept open
 
 	exit(EXIT_SUCCESS);
