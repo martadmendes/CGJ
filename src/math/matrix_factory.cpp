@@ -53,7 +53,7 @@ math::mat4 math::matrix_factory::scale(float sx, float sy, float sz) {
 }
 
 math::mat4 math::matrix_factory::translate(float dx, float dy, float dz) {
-	return mat4(1.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, dx, dy, dz, 1.0);
+	return mat4(1.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f, dx, dy, dz, 1.0f);
 }
 
 math::mat4 math::matrix_factory::rotate(vec3& axis, float angle) {
@@ -75,12 +75,12 @@ math::mat4 math::matrix_factory::rotate(vec3& axis, float angle) {
 	return result;
 }
 
-math::mat3 math::matrix_factory::rodrigues(const float angle, vec3& axis) {
-	float rad = angle * PI / 180.0;
+math::mat4 math::matrix_factory::rodrigues(const float angle, vec3& axis) {
+	float rad = angle * PI / 180.0f;
 
 	mat3 a = dual_matrix(axis.normalize());
 	
 	mat3 result = identity3x3() + sin(rad) * a + (1 - cos(rad)) * (a * a);
 
-	return result;
+	return mat3_to_mat4(result);
 }

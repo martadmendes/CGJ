@@ -25,6 +25,6 @@ namespace math {
 		static mat4 scale(float sx, float sy, float sz);
 		static mat4 translate(float dx, float dy, float dz);
 		static mat4 rotate(vec3& axis, float angle);
-		static mat3 rodrigues(const float angle, vec3& axis);
+		static mat4 rodrigues(const float angle, vec3& axis);
 	};
 }

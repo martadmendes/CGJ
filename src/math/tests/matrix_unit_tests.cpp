@@ -234,7 +234,7 @@ void aula02() {
 
 	for (math::vec3& v1 : vs) {
 		for (math::vec3& v2 : vs) {
-			std::cout << math::matrix_factory::rodrigues(90, v1) * v2 << "\n" << std::endl;
+			std::cout << math::matrix_factory::rodrigues(90, v1) * math::vec4(v2.x, v2.y, v2.z, 1.0f) << "\n" << std::endl;
 		}
 	}
 

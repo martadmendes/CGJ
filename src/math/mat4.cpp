@@ -94,30 +94,37 @@ math::mat4 math::operator*(const float k, const mat4& m) {
 }
 
 math::vec4 math::operator*(const mat4& m, const math::vec4 v) {
-	return vec4(m.data[0] * v.x + m.data[4] * v.y + m.data[8] * v.z + m.data[12] * v.w,
+	/*return vec4(m.data[0] * v.x + m.data[4] * v.y + m.data[8] * v.z + m.data[12] * v.w,
 				m.data[1] * v.x + m.data[5] * v.y + m.data[9] * v.z + m.data[13] * v.w,
 				m.data[2] * v.x + m.data[6] * v.y + m.data[10] * v.z + m.data[14] * v.w,
-				m.data[3] * v.x + m.data[7] * v.y + m.data[11] * v.z + m.data[15] * v.w);
+				m.data[3] * v.x + m.data[7] * v.y + m.data[11] * v.z + m.data[15] * v.w);*/
+
+	vec4 result;
+	result.x = m.data[0] * v.x + m.data[4] * v.y + m.data[8] * v.z + m.data[12] * v.w;
+	result.y = m.data[1] * v.x + m.data[5] * v.y + m.data[9] * v.z + m.data[13] * v.w;
+	result.z = m.data[2] * v.x + m.data[6] * v.y + m.data[10] * v.z + m.data[14] * v.w;
+	result.w = m.data[3] * v.x + m.data[7] * v.y + m.data[11] * v.z + m.data[15] * v.w;
+	return result;
 }
 
 math::mat4 math::operator*(const mat4& m1, const mat4& m2) {
 	mat4 result;
-	result.data[0] = m1.data[0] * m2.data[0] + m1.data[4] + m2.data[1] + m1.data[8] * m2.data[2] + m1.data[12] * m2.data[3];
-	result.data[1] = m1.data[1] * m2.data[0] + m1.data[5] + m2.data[1] + m1.data[9] * m2.data[2] + m1.data[13] * m2.data[3];
-	result.data[2] = m1.data[2] * m2.data[0] + m1.data[6] + m2.data[1] + m1.data[10] * m2.data[2] + m1.data[14] * m2.data[3];
-	result.data[3] = m1.data[3] * m2.data[0] + m1.data[7] + m2.data[1] + m1.data[11] * m2.data[2] + m1.data[15] * m2.data[3];
-	result.data[4] = m1.data[0] * m2.data[4] + m1.data[4] + m2.data[5] + m1.data[8] * m2.data[6] + m1.data[12] * m2.data[7];
-	result.data[5] = m1.data[1] * m2.data[4] + m1.data[5] + m2.data[5] + m1.data[9] * m2.data[6] + m1.data[13] * m2.data[7];
-	result.data[6] = m1.data[2] * m2.data[4] + m1.data[6] + m2.data[5] + m1.data[10] * m2.data[6] + m1.data[14] * m2.data[7];
-	result.data[7] = m1.data[3] * m2.data[4] + m1.data[7] + m2.data[5] + m1.data[11] * m2.data[6] + m1.data[15] * m2.data[7];
-	result.data[8] = m1.data[0] * m2.data[8] + m1.data[4] + m2.data[9] + m1.data[8] * m2.data[10] + m1.data[12] * m2.data[11];
-	result.data[9] = m1.data[1] * m2.data[8] + m1.data[5] + m2.data[9] + m1.data[9] * m2.data[10] + m1.data[13] * m2.data[11];
-	result.data[10] = m1.data[2] * m2.data[8] + m1.data[6] + m2.data[9] + m1.data[10] * m2.data[10] + m1.data[14] * m2.data[11];
-	result.data[11] = m1.data[3] * m2.data[8] + m1.data[7] + m2.data[9] + m1.data[11] * m2.data[10] + m1.data[15] * m2.data[11];
-	result.data[12] = m1.data[0] * m2.data[12] + m1.data[4] + m2.data[13] + m1.data[8] * m2.data[14] + m1.data[12] * m2.data[15];
-	result.data[13] = m1.data[1] * m2.data[12] + m1.data[5] + m2.data[13] + m1.data[9] * m2.data[14] + m1.data[13] * m2.data[15];
-	result.data[14] = m1.data[2] * m2.data[12] + m1.data[6] + m2.data[13] + m1.data[10] * m2.data[14] + m1.data[14] * m2.data[15];
-	result.data[15] = m1.data[3] * m2.data[12] + m1.data[7] + m2.data[13] + m1.data[11] * m2.data[14] + m1.data[15] * m2.data[15];
+	result.data[0] = m1.data[0] * m2.data[0] + m1.data[4] * m2.data[1] + m1.data[8] * m2.data[2] + m1.data[12] * m2.data[3];
+	result.data[1] = m1.data[1] * m2.data[0] + m1.data[5] * m2.data[1] + m1.data[9] * m2.data[2] + m1.data[13] * m2.data[3];
+	result.data[2] = m1.data[2] * m2.data[0] + m1.data[6] * m2.data[1] + m1.data[10] * m2.data[2] + m1.data[14] * m2.data[3];
+	result.data[3] = m1.data[3] * m2.data[0] + m1.data[7] * m2.data[1] + m1.data[11] * m2.data[2] + m1.data[15] * m2.data[3];
+	result.data[4] = m1.data[0] * m2.data[4] + m1.data[4] * m2.data[5] + m1.data[8] * m2.data[6] + m1.data[12] * m2.data[7];
+	result.data[5] = m1.data[1] * m2.data[4] + m1.data[5] * m2.data[5] + m1.data[9] * m2.data[6] + m1.data[13] * m2.data[7];
+	result.data[6] = m1.data[2] * m2.data[4] + m1.data[6] * m2.data[5] + m1.data[10] * m2.data[6] + m1.data[14] * m2.data[7];
+	result.data[7] = m1.data[3] * m2.data[4] + m1.data[7] * m2.data[5] + m1.data[11] * m2.data[6] + m1.data[15] * m2.data[7];
+	result.data[8] = m1.data[0] * m2.data[8] + m1.data[4] * m2.data[9] + m1.data[8] * m2.data[10] + m1.data[12] * m2.data[11];
+	result.data[9] = m1.data[1] * m2.data[8] + m1.data[5] * m2.data[9] + m1.data[9] * m2.data[10] + m1.data[13] * m2.data[11];
+	result.data[10] = m1.data[2] * m2.data[8] + m1.data[6] * m2.data[9] + m1.data[10] * m2.data[10] + m1.data[14] * m2.data[11];
+	result.data[11] = m1.data[3] * m2.data[8] + m1.data[7] * m2.data[9] + m1.data[11] * m2.data[10] + m1.data[15] * m2.data[11];
+	result.data[12] = m1.data[0] * m2.data[12] + m1.data[4] * m2.data[13] + m1.data[8] * m2.data[14] + m1.data[12] * m2.data[15];
+	result.data[13] = m1.data[1] * m2.data[12] + m1.data[5] * m2.data[13] + m1.data[9] * m2.data[14] + m1.data[13] * m2.data[15];
+	result.data[14] = m1.data[2] * m2.data[12] + m1.data[6] * m2.data[13] + m1.data[10] * m2.data[14] + m1.data[14] * m2.data[15];
+	result.data[15] = m1.data[3] * m2.data[12] + m1.data[7] * m2.data[13] + m1.data[11] * m2.data[14] + m1.data[15] * m2.data[15];
 	return result;
 }
 
