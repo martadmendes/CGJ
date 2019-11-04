@@ -1,25 +1,27 @@
 ///////////////////////////////////////////////////////////////////////////////
 //
-// Drawing two instances of a triangle in Modern OpenGL.
-// A "hello world" of Modern OpenGL.
+// Assignment consists in the following:
 //
-// Assignment : Create Shader Abstraction 
-//					(e.g. check compilation/linkage for errors, read from file) 
-//			  : Manage Multiple Drawable Entities (using your vertex and matrix classes)
-//              Draw a set of 7 TANs (i.e. TANGRAM shapes) of different colors: 
-//              (1) 3 different TAN geometric shapes at the origin:
-//					- right triangle
-//					- square
-//					- parallelogram
-//              (2) 7 TANs of different colors put together to form a shape of
-//                  your choice through transformation matrices:
-//					- 2 big right triangles
-//					- 1 medium right triangle
-//					- 2 small right triangles
-//					- 1 square
-//					- 1 parallelogram;
+// - Create the following changes to your scene:
+//   - Make your TANs double-faced, so they can be seen from both sides.
+//   - The new face of each TAN should share the same hue as the original top
+//     face color but have a different level of saturation and brightness.
 //
-// (c)2013-19 by Carlos Martinho
+// - Add the following functionality (consider a Camera class):
+//   - Create a View Matrix from (eye, center, up) parameters.
+//   - Create an Orthographic Projection Matrix from (left-right, bottom-top, 
+//     near-far) parameters.
+//   - Create a Perspective Projection Matrix from (fovy, aspect, nearZ, farZ) 
+//     parameters.
+//
+// - Add the following dynamics to the application:
+//   - Create a free 3D camera controlled by the mouse (orientation) and 
+//     keyboard (movement) allowing to visualize the scene through all its 
+//     angles.
+//   - Change perspective from orthographic to perspective and back as
+//     a response to pressing the key 'p'.
+//
+// (c) 2013-19 by Carlos Martinho
 //
 ///////////////////////////////////////////////////////////////////////////////
 
@@ -29,24 +31,25 @@
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
 
-#include "vertices.hpp"
-#include "math/vec2.hpp"
-#include "math/vec3.hpp"
-#include "math/vec4.hpp"
-#include "math/mat2.hpp"
-#include "math/mat3.hpp"
-#include "math/mat4.hpp"
-#include "math/matrix_factory.hpp"
+#include "engine/geometry/vertices.hpp"
+#include "engine/math/vec2.hpp"
+#include "engine/math/vec3.hpp"
+#include "engine/math/vec4.hpp"
+#include "engine/math/mat2.hpp"
+#include "engine/math/mat3.hpp"
+#include "engine/math/mat4.hpp"
+#include "engine/math/matrix_factory.hpp"
 
 #define VERTICES 0
 #define COLORS 1
 #define NUM_OBJ 7
 
-math::mat4 transformations[NUM_OBJ]; // array que contem as matrizes de transformações por objecto
+engine::math::mat4 transformations[NUM_OBJ]; // array que contem as matrizes de transformações por objecto
 int num_indices[NUM_OBJ]; // array que contem o nr de indices por objecto
 GLuint VaoId[NUM_OBJ], VboId[3];  // 1 vao por obj, 2 vbo por vao (reutilizados)
 GLuint VertexShaderId, FragmentShaderId, ProgramId;
-GLint UniformId;
+GLint UboId, UniformId;
+const GLuint UBO_BP = 0;
 
 #define ERROR_CALLBACK
 #ifdef  ERROR_CALLBACK
@@ -166,6 +169,12 @@ const GLchar* VertexShader =
 
 	"uniform mat4 Matrix;\n"
 
+	"uniform SharedMatrices\n"
+	"{\n"
+	"	mat4 ViewMatrix;\n"
+	"	mat4 ProjectionMatrix;\n"
+	"};\n"
+
 	"void main(void)\n"
 	"{\n"
 	"	gl_Position = Matrix * in_Position;\n"
@@ -204,6 +213,8 @@ void createShaderProgram() {
 
 	glLinkProgram(ProgramId);
 	UniformId = glGetUniformLocation(ProgramId, "Matrix");
+	UboId = glGetUniformBlockIndex(ProgramId, "SharedMatrices");
+	glUniformBlockBinding(ProgramId, UboId, UBO_BP);
 
 	glDetachShader(ProgramId, VertexShaderId);
 	glDeleteShader(VertexShaderId);
@@ -226,7 +237,7 @@ void destroyShaderProgram() {
 
 /////////////////////////////////////////////////////////////////////// VAOs & VBOs
 
-void create_triangle(int obj_num, math::vec4 color) {
+void create_triangle(int obj_num, engine::math::vec4 color) {
 	num_indices[obj_num] = 3;
 	glGenVertexArrays(1, &VaoId[obj_num]);
 	glBindVertexArray(VaoId[obj_num]);
@@ -261,7 +272,7 @@ void create_triangle(int obj_num, math::vec4 color) {
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 }
 
-void create_square(int obj_num, math::vec4 color) {
+void create_square(int obj_num, engine::math::vec4 color) {
 	num_indices[obj_num] = 6;
 	glGenVertexArrays(1, &VaoId[obj_num]);
 	glBindVertexArray(VaoId[obj_num]);
@@ -297,7 +308,7 @@ void create_square(int obj_num, math::vec4 color) {
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 }
 
-void create_parallelogram(int obj_num, math::vec4 color) {
+void create_parallelogram(int obj_num, engine::math::vec4 color) {
 	num_indices[obj_num] = 6;
 	glGenVertexArrays(1, &VaoId[obj_num]);
 	glBindVertexArray(VaoId[obj_num]);
@@ -334,59 +345,59 @@ void create_parallelogram(int obj_num, math::vec4 color) {
 }
 
 void createBufferObjects() {
-	math::vec3 z = math::vec3(0, 0, 1);
-	math::mat4 id = math::matrix_factory::identity4x4();
+	engine::math::vec3 z = engine::math::vec3(0, 0, 1);
+	engine::math::mat4 id = engine::math::matrix_factory::identity4x4();
 	//final scale if needed
-	math::mat4 final_scale = math::matrix_factory::scale(0.5f, 0.5f, 1.0f);
+	engine::math::mat4 final_scale = engine::math::matrix_factory::scale(0.5f, 0.5f, 1.0f);
 
 	//triangle 1: rotate + translate
-	math::mat4 t1_rotate = math::matrix_factory::rodrigues(180, z);
-	math::mat4 t1_translate = math::matrix_factory::translate(1.0f, 0.0f, 0.0f);
+	engine::math::mat4 t1_rotate = engine::math::matrix_factory::rodrigues(z, 180);
+	engine::math::mat4 t1_translate = engine::math::matrix_factory::translate(1.0f, 0.0f, 0.0f);
 
 	transformations[0] =  t1_translate * t1_rotate;
 
 	//triangle 2: rotate + translate
-	math::mat4 t2_rotate = math::matrix_factory::rodrigues(135, z);
-	math::mat4 t2_translate = math::matrix_factory::translate(0.35f, -0.35f, 0.0f);
+	engine::math::mat4 t2_rotate = engine::math::matrix_factory::rodrigues(z, 135);
+	engine::math::mat4 t2_translate = engine::math::matrix_factory::translate(0.35f, -0.35f, 0.0f);
 
 	transformations[1] = t2_translate * t2_rotate;
 
 
 	//triangle 3: scale + rotate + translate
-	math::mat4 t3_scale = math::matrix_factory::scale(sqrt(0.5f), sqrt(0.5f), 1.0);
-	math::mat4 t3_rotate = math::matrix_factory::rodrigues(-135, z);
-	math::mat4 t3_translate = math::matrix_factory::translate(0.5f, 0.5f, 0.0f);
+	engine::math::mat4 t3_scale = engine::math::matrix_factory::scale(sqrt(0.5f), sqrt(0.5f), 1.0);
+	engine::math::mat4 t3_rotate = engine::math::matrix_factory::rodrigues(z, -135);
+	engine::math::mat4 t3_translate = engine::math::matrix_factory::translate(0.5f, 0.5f, 0.0f);
 
 	transformations[2] = t3_translate * t3_rotate * t3_scale;
 
 	//square 4: rotate + scale + translate
-	math::mat4 s4_scale = math::matrix_factory::scale(0.5f, 0.5f, 1.0f);
-	math::mat4 s4_rotate = math::matrix_factory::rodrigues(45.0f, z);
-	math::mat4 s4_translate = math::matrix_factory::translate(-0.0015f, 0.355f, 0.0f);
+	engine::math::mat4 s4_scale = engine::math::matrix_factory::scale(0.5f, 0.5f, 1.0f);
+	engine::math::mat4 s4_rotate = engine::math::matrix_factory::rodrigues(z, 45.0f);
+	engine::math::mat4 s4_translate = engine::math::matrix_factory::translate(-0.0015f, 0.355f, 0.0f);
 
 	transformations[3] = s4_translate * s4_rotate * s4_scale;
 
 
 	//parallelogram 5: rotate + scale + translate
-	math::mat4 p5_scale = math::matrix_factory::scale(1.0f, 0.35f, 1.0f);
-	math::mat4 p5_rotate = math::matrix_factory::rodrigues(90.0f, z);
-	math::mat4 p5_translate = math::matrix_factory::translate(-0.53f, 0.0f, 0.0f);
+	engine::math::mat4 p5_scale = engine::math::matrix_factory::scale(1.0f, 0.35f, 1.0f);
+	engine::math::mat4 p5_rotate = engine::math::matrix_factory::rodrigues(z, 90.0f);
+	engine::math::mat4 p5_translate = engine::math::matrix_factory::translate(-0.53f, 0.0f, 0.0f);
 
 	transformations[4] =  p5_translate * p5_rotate * p5_scale;
 
 
 	//triangle 6: scale + rotate + translate
-	math::mat4 t6_scale = math::matrix_factory::scale(0.5f, 0.5f, 1.0);
-	math::mat4 t6_rotate = math::matrix_factory::rodrigues(45, z);
-	math::mat4 t6_translate = math::matrix_factory::translate(-0.60f, 0.61f, 0.0f);
+	engine::math::mat4 t6_scale = engine::math::matrix_factory::scale(0.5f, 0.5f, 1.0);
+	engine::math::mat4 t6_rotate = engine::math::matrix_factory::rodrigues(z, 45);
+	engine::math::mat4 t6_translate = engine::math::matrix_factory::translate(-0.60f, 0.61f, 0.0f);
 
 	transformations[5] = t6_translate * t6_rotate * t6_scale;
 
 
 	//triangle 7: scale + rotate + translate
-	math::mat4 t7_scale = math::matrix_factory::scale(0.5f, 0.5f, 1.0);
-	math::mat4 t7_rotate = math::matrix_factory::rodrigues(-45, z);
-	math::mat4 t7_translate = math::matrix_factory::translate(-0.71f, 0.5f, 0.0f);
+	engine::math::mat4 t7_scale = engine::math::matrix_factory::scale(0.5f, 0.5f, 1.0);
+	engine::math::mat4 t7_rotate = engine::math::matrix_factory::rodrigues(z, -45);
+	engine::math::mat4 t7_translate = engine::math::matrix_factory::translate(-0.71f, 0.5f, 0.0f);
 
 	transformations[6] = t7_translate * t7_rotate * t7_scale;
 
@@ -414,6 +425,7 @@ void destroyBufferObjects() {
 		glDeleteVertexArrays(1, &VaoId[i]);
 		glBindBuffer(GL_ARRAY_BUFFER, 0);
 		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+		glBindBuffer(GL_UNIFORM_BUFFER, 0);
 		glBindVertexArray(0);
 
 #ifndef ERROR_CALLBACK
@@ -425,8 +437,14 @@ void destroyBufferObjects() {
 /////////////////////////////////////////////////////////////////////// SCENE
 
 void drawScene() {
-	math::mat4 identity = math::matrix_factory::identity4x4();
-	//int i = 0;
+
+	/*glBindBuffer(GL_UNIFORM_BUFFER, VboId[1]);
+	{
+		glBufferSubData(GL_UNIFORM_BUFFER, 0, sizeof(Matrix), ViewMatrix1);
+		glBufferSubData(GL_UNIFORM_BUFFER, sizeof(Matrix), sizeof(Matrix), ProjectionMatrix1);
+	}
+	glBindBuffer(GL_UNIFORM_BUFFER, 0);*/
+
 	for (int i = 0; i < NUM_OBJ; i++) {
 		glBindVertexArray(VaoId[i]);
 		glUseProgram(ProgramId);
@@ -582,7 +600,7 @@ int main(int argc, char* argv[]) {
 	int is_fullscreen = 0;
 	int is_vsync = 1;
 	GLFWwindow* win = setup(gl_major, gl_minor,
-		640, 640, "Hello Modern 2D World", is_fullscreen, is_vsync);
+		640, 640 /*480*/, "Hello Modern 3D World", is_fullscreen, is_vsync);
 	run(win);
 	exit(EXIT_SUCCESS);
 }

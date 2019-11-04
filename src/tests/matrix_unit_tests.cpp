@@ -7,17 +7,17 @@
 void mat2_tests() {
 	std::cout << "*** MATRIX 2 TESTS *** \n" << std::endl;
 
-	math::mat2 m1 = math::mat2(1, 4, 6, 0);
-	math::mat2 m2 = math::mat2(4, 3, 2, 1);
-	math::vec2 v = math::vec2(1, 2);
+	engine::math::mat2 m1 = engine::math::mat2(1, 4, 6, 0);
+	engine::math::mat2 m2 = engine::math::mat2(4, 3, 2, 1);
+	engine::math::vec2 v = engine::math::vec2(1, 2);
 
 	// print identity 2x2 //
 	std::cout << "Identity 2x2: " << std::endl;
-	std::cout << math::matrix_factory::identity2x2() << "\n" << std::endl;
+	std::cout << engine::math::matrix_factory::identity2x2() << "\n" << std::endl;
 
 	// print zero 2x2 //
 	std::cout << "Zero 2x2: " << std::endl;
-	std::cout << math::matrix_factory::zero2x2() << "\n" << std::endl;
+	std::cout << engine::math::matrix_factory::zero2x2() << "\n" << std::endl;
 	
 	// test determinant //
 	std::cout << "Determinant:" << std::endl;
@@ -75,22 +75,22 @@ void mat2_tests() {
 void mat3_tests() {
 	std::cout << "*** MATRIX 3 TESTS *** \n" << std::endl;
 
-	math::mat3 m1 = math::mat3(1, 2, 2, 3, 1, 5, 1, 2, 3);
-	math::mat3 m2 = math::mat3(3, 2, 1, 3, 2, 1, 3, 2, 1);
-	math::vec3 v = math::vec3(1, 2, 3);
+	engine::math::mat3 m1 = engine::math::mat3(1, 2, 2, 3, 1, 5, 1, 2, 3);
+	engine::math::mat3 m2 = engine::math::mat3(3, 2, 1, 3, 2, 1, 3, 2, 1);
+	engine::math::vec3 v = engine::math::vec3(1, 2, 3);
 
 	// print identity 3x3 //
 	std::cout << "Identity 3x3: " << std::endl;
-	std::cout << math::matrix_factory::identity3x3() << "\n" << std::endl;
+	std::cout << engine::math::matrix_factory::identity3x3() << "\n" << std::endl;
 
 	// print zero 3x3 //
 	std::cout << "Zero 3x3: " << std::endl;
-	std::cout << math::matrix_factory::zero3x3() << "\n" << std::endl;
+	std::cout << engine::math::matrix_factory::zero3x3() << "\n" << std::endl;
 
 	// test dual matrix //
 	std::cout << "Dual Matrix:" << std::endl;
 	std::cout << "v: " << v << std::endl;
-	std::cout << "dual_matrix(v) = " << math::matrix_factory::dual_matrix(v) << "\n" << std::endl;
+	std::cout << "dual_matrix(v) = " << engine::math::matrix_factory::dual_matrix(v) << "\n" << std::endl;
 
 	// test determinant //
 	std::cout << "Determinant:" << std::endl;
@@ -145,7 +145,7 @@ void mat3_tests() {
 	// test convert to matrix 4x4 //
 	std::cout << "Convert to 4x4:" << std::endl;
 	std::cout << "m1: " << m1 << std::endl;
-	std::cout << "mat3_to_mat4(m1) = " << math::matrix_factory::mat3_to_mat4(m1) << "\n\n" << std::endl;
+	std::cout << "mat3_to_mat4(m1) = " << engine::math::matrix_factory::mat3_to_mat4(m1) << "\n\n" << std::endl;
 
 }
 
@@ -154,30 +154,30 @@ void mat3_tests() {
 void mat4_tests() {
 	std::cout << "*** MATRIX 4 TESTS *** \n" << std::endl;
 
-	math::mat4 m1 = math::mat4(1, 2, 3, 4, 1, 2, 3, 4, 1, 2, 3, 4, 1, 2, 3, 4);
-	math::mat4 m2 = math::mat4(4, 3, 2, 1, 4, 3, 2, 1, 4, 3, 2, 1, 4, 3, 2, 1);
-	math::vec4 v = math::vec4(1, 2, 3, 4);
-	math::vec3 axis = math::vec3(0, 1, 0);
+	engine::math::mat4 m1 = engine::math::mat4(1, 2, 3, 4, 1, 2, 3, 4, 1, 2, 3, 4, 1, 2, 3, 4);
+	engine::math::mat4 m2 = engine::math::mat4(4, 3, 2, 1, 4, 3, 2, 1, 4, 3, 2, 1, 4, 3, 2, 1);
+	engine::math::vec4 v = engine::math::vec4(1, 2, 3, 4);
+	engine::math::vec3 axis = engine::math::vec3(0, 1, 0);
 
 	// print identity 4x4 //
 	std::cout << "Identity 4x4: " << std::endl;
-	std::cout << math::matrix_factory::identity4x4() << "\n" << std::endl;
+	std::cout << engine::math::matrix_factory::identity4x4() << "\n" << std::endl;
 
 	// print zero 4x4 //
 	std::cout << "Zero 4x4: " << std::endl;
-	std::cout << math::matrix_factory::zero4x4() << "\n" << std::endl;
+	std::cout << engine::math::matrix_factory::zero4x4() << "\n" << std::endl;
 
 	// test scale //
 	std::cout << "Scale:" << std::endl;
-	std::cout << "scale(1, 2, 3) = " << math::matrix_factory::scale(1, 2, 3) << "\n" << std::endl;
+	std::cout << "scale(1, 2, 3) = " << engine::math::matrix_factory::scale(1, 2, 3) << "\n" << std::endl;
 
 	// test translate //
 	std::cout << "Translate:" << std::endl;
-	std::cout << "translate(3, 2, 1) = " << math::matrix_factory::translate(3, 2, 1) << "\n" << std::endl;
+	std::cout << "translate(3, 2, 1) = " << engine::math::matrix_factory::translate(3, 2, 1) << "\n" << std::endl;
 
 	// test rotate //
 	std::cout << "Rotate:" << std::endl;
-	std::cout << "rotate(axis, 90) = " << math::matrix_factory::rotate(axis, 90) << "\n" << std::endl;
+	std::cout << "rotate(axis, 90) = " << engine::math::matrix_factory::rotate(axis, 90) << "\n" << std::endl;
 
 	// test transpose // 
 	std::cout << "Transpose:" << std::endl;
@@ -222,7 +222,7 @@ void mat4_tests() {
 	// test convert to matrix 3x3 //
 	std::cout << "Convert to 3x3:" << std::endl;
 	std::cout << "m1: " << m1 << std::endl;
-	std::cout << "mat4_to_mat3(m1) = " << math::matrix_factory::mat4_to_mat3(m1) << "\n\n" << std::endl;
+	std::cout << "mat4_to_mat3(m1) = " << engine::math::matrix_factory::mat4_to_mat3(m1) << "\n\n" << std::endl;
 }
 
 
@@ -230,11 +230,11 @@ void mat4_tests() {
 void aula02() {
 	std::cout << "***TESTE AULA***\n" << std::endl;
 	
-	std::vector<math::vec3> vs = { math::vec3(2,0,0), math::vec3(0,3,0), math::vec3(0,0,4) };
+	std::vector<engine::math::vec3> vs = { engine::math::vec3(2,0,0), engine::math::vec3(0,3,0), engine::math::vec3(0,0,4) };
 
-	for (math::vec3& v1 : vs) {
-		for (math::vec3& v2 : vs) {
-			std::cout << math::matrix_factory::rodrigues(90, v1) * math::vec4(v2.x, v2.y, v2.z, 1.0f) << "\n" << std::endl;
+	for (engine::math::vec3& v1 : vs) {
+		for (engine::math::vec3& v2 : vs) {
+			std::cout << engine::math::matrix_factory::rodrigues(90, v1) * engine::math::vec4(v2.x, v2.y, v2.z, 1.0f) << "\n" << std::endl;
 		}
 	}
 

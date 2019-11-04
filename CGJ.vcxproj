@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup Label="ProjectConfigurations">
     <ProjectConfiguration Include="Debug|Win32">
@@ -19,28 +19,34 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\engine\camera.cpp" />
+    <ClCompile Include="src\engine\math\mat2.cpp" />
+    <ClCompile Include="src\engine\math\mat3.cpp" />
+    <ClCompile Include="src\engine\math\mat4.cpp" />
+    <ClCompile Include="src\engine\math\matrix_factory.cpp" />
+    <ClCompile Include="src\engine\math\vec2.cpp" />
+    <ClCompile Include="src\engine\math\vec3.cpp" />
+    <ClCompile Include="src\engine\math\vec4.cpp" />
     <ClCompile Include="src\main.cpp" />
-    <ClCompile Include="src\math\mat2.cpp" />
-    <ClCompile Include="src\math\mat3.cpp" />
-    <ClCompile Include="src\math\mat4.cpp" />
-    <ClCompile Include="src\math\matrix_factory.cpp" />
-    <ClCompile Include="src\math\tests\matrix_unit_tests.cpp" />
-    <ClCompile Include="src\math\tests\vector_unit_tests.cpp" />
-    <ClCompile Include="src\math\vec2.cpp" />
-    <ClCompile Include="src\math\vec3.cpp" />
-    <ClCompile Include="src\math\vec4.cpp" />
+    <ClCompile Include="src\tests\matrix_unit_tests.cpp" />
+    <ClCompile Include="src\tests\vector_unit_tests.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="src\math\mat2.hpp" />
-    <ClInclude Include="src\math\mat3.hpp" />
-    <ClInclude Include="src\math\mat4.hpp" />
-    <ClInclude Include="src\math\matrix_factory.hpp" />
-    <ClInclude Include="src\math\tests\matrix_unit_tests.hpp" />
-    <ClInclude Include="src\math\tests\vector_unit_tests.hpp" />
-    <ClInclude Include="src\math\vec2.hpp" />
-    <ClInclude Include="src\math\vec3.hpp" />
-    <ClInclude Include="src\math\vec4.hpp" />
-    <ClInclude Include="src\vertices.hpp" />
+    <ClInclude Include="src\engine\camera.hpp" />
+    <ClInclude Include="src\engine\geometry\vertices.hpp" />
+    <ClInclude Include="src\engine\math\mat2.hpp" />
+    <ClInclude Include="src\engine\math\mat3.hpp" />
+    <ClInclude Include="src\engine\math\mat4.hpp" />
+    <ClInclude Include="src\engine\math\matrix_factory.hpp" />
+    <ClInclude Include="src\engine\math\vec2.hpp" />
+    <ClInclude Include="src\engine\math\vec3.hpp" />
+    <ClInclude Include="src\engine\math\vec4.hpp" />
+    <ClInclude Include="src\tests\matrix_unit_tests.hpp" />
+    <ClInclude Include="src\tests\vector_unit_tests.hpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="resources\shaders\shader.frag" />
+    <None Include="resources\shaders\shader.vert" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>
