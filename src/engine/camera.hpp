@@ -15,10 +15,15 @@ namespace engine {
 		math::vec3 center;
 		math::vec3 up;
 
+		int width, height;
+		float fovy, near, far;
+
 		math::mat4 projection_matrix;
 
+		bool is_ortho = false;
+
 		camera();
-		camera(math::vec3 eye, math::vec3 center, math::vec3 up);
+		camera(math::vec3 eye, math::vec3 center, math::vec3 up, int width, int height, float fovy, float near, float far);
 		~camera();
 
 		void move_camera();
@@ -28,10 +33,11 @@ namespace engine {
 		math::mat4 get_view();
 		math::mat4 get_projection();
 
-		void set_orthographic(float left, float right, float top, float bottom, float near, float far);
-		void set_perspective(float fovy, float aspect, float near, float far);
+		void set_orthographic();
+		void set_perspective();
 
-		void yaw(float angle);
 		void pitch(float angle);
+		void yaw(float angle);
+
 	};
 }

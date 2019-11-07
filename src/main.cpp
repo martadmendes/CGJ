@@ -45,7 +45,7 @@
 
 #define VERTICES 0
 #define COLORS 1
-#define NUM_OBJ 7
+#define NUM_OBJ 14
 
 engine::math::mat4 transformations[NUM_OBJ]; // array que contem as matrizes de transformações por objecto
 int num_indices[NUM_OBJ]; // array que contem o nr de indices por objecto
@@ -55,17 +55,16 @@ GLuint VertexShaderId, FragmentShaderId, ProgramId;
 GLuint ModelUniformId, ViewUniformId, ProjectionUniformId;
 
 engine::camera cam;
-engine::math::vec3 EYE = engine::math::vec3::vec3(0.0f, 0.0f, 4.0f);
-engine::math::vec3 CENTER = engine::math::vec3::vec3(0.0f, 0.0f, 0.0f);
-engine::math::vec3 UP = engine::math::vec3::vec3(0.0f, 1.0f, 0.0f);
 int WIDTH = 640, HEIGHT = 640;
-float FOVY = 30, ASPECT = (float)WIDTH/(float)HEIGHT, NEAR = 1, FAR = 100;
+float SPEED = 0.08f;
 
+bool mouse_pressed = false;
+engine::math::vec2 last_mouse_pos = engine::math::vec2(-1.0f, -1.0f);
 
 #define ERROR_CALLBACK
 #ifdef  ERROR_CALLBACK
 
-////////////////////////////////////////////////// ERROR CALLBACK (OpenGL 4.3+)
+///////////////////////////////////////////////////////////////////////// ERROR CALLBACK (OpenGL 4.3+)
 
 static const std::string errorSource(GLenum source) {
 	switch (source) {
@@ -125,7 +124,7 @@ void setupErrorCallback() {
 
 #else
 
-///////////////////////////////////////////////// ERROR HANDLING (All versions)
+///////////////////////////////////////////////////////////////////////// ERROR HANDLING (All versions)
 
 static const std::string errorString(GLenum error) {
 	switch (error) {
@@ -168,7 +167,7 @@ static void checkOpenGLError(std::string error) {
 
 #endif // ERROR_CALLBACK
 
-/////////////////////////////////////////////////////////////////////// SHADERs
+///////////////////////////////////////////////////////////////////////// SHADERs
 
 const GLchar* VertexShader =
 {
@@ -242,7 +241,7 @@ void destroyShaderProgram() {
 #endif
 }
 
-/////////////////////////////////////////////////////////////////////// VAOs & VBOs
+///////////////////////////////////////////////////////////////////////// VAOs & VBOs
 
 void create_triangle(int obj_num, engine::math::vec4 color) {
 	num_indices[obj_num] = 3;
@@ -350,7 +349,7 @@ void create_parallelogram(int obj_num, engine::math::vec4 color) {
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 }
-/*
+
 void create_back_triangle(int obj_num, engine::math::vec4 color) {
 	num_indices[obj_num] = 3;
 	glGenVertexArrays(1, &VaoId[obj_num]);
@@ -457,12 +456,10 @@ void create_back_parallelogram(int obj_num, engine::math::vec4 color) {
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 }
-*/
+
 void createBufferObjects() {
 	engine::math::vec3 z = engine::math::vec3(0, 0, 1);
 	engine::math::mat4 id = engine::math::matrix_factory::identity4x4();
-
-	////// FRONT //////
 
 	//triangle 1: rotate + translate
 	engine::math::mat4 t1_rotate = engine::math::matrix_factory::rodrigues(z, 180);
@@ -516,9 +513,17 @@ void createBufferObjects() {
 	transformations[6] = t7_translate * t7_rotate * t7_scale;
 
 
-	///////// BACK /////////
+	//back side transformations are the same as the front, but with inverted indices
+	transformations[7] = transformations[0];
+	transformations[8] = transformations[1];
+	transformations[9] = transformations[2];
+	transformations[10] = transformations[3];
+	transformations[11] = transformations[4];
+	transformations[12] = transformations[5];
+	transformations[13] = transformations[6];
 
 
+	//front side object creation
 	create_triangle(0, white);
 	create_triangle(1, lilac);
 	create_triangle(2, blue);
@@ -526,14 +531,14 @@ void createBufferObjects() {
 	create_parallelogram(4, orange);
 	create_triangle(5, green);
 	create_triangle(6, yellow);
-
-	/*create_back_triangle(7, white);
-	create_back_triangle(8, lilac);
-	create_back_triangle(9, blue);
-	create_back_square(10, red);
-	create_back_parallelogram(11, orange);
-	create_back_triangle(12, green);
-	create_back_triangle(13, yellow);*/
+	//back side object creation
+	create_back_triangle(7, white_back);
+	create_back_triangle(8, lilac_back);
+	create_back_triangle(9, blue_back);
+	create_back_square(10, red_back);
+	create_back_parallelogram(11, orange_back);
+	create_back_triangle(12, green_back);
+	create_back_triangle(13, yellow_back);
 
 
 #ifndef ERROR_CALLBACK
@@ -559,7 +564,7 @@ void destroyBufferObjects() {
 	}
 }
 
-/////////////////////////////////////////////////////////////////////// SCENEw
+///////////////////////////////////////////////////////////////////////// SCENE
 
 
 void drawScene() {
@@ -589,7 +594,73 @@ void drawScene() {
 	}
 }
 
-///////////////////////////////////////////////////////////////////// CALLBACKS
+///////////////////////////////////////////////////////////////////////// CALLBACKS
+
+void key_callback(GLFWwindow* win, int key, int scancode, int action, int mods) {
+	if (key == GLFW_KEY_P && action == GLFW_PRESS) {
+		if (cam.is_ortho) {
+			cam.set_perspective();
+			cam.is_ortho = false;
+		}
+		else {
+			cam.set_orthographic();
+			cam.is_ortho = true;
+		}
+	}
+	else if (key == GLFW_KEY_W && (action == GLFW_PRESS || action == GLFW_REPEAT)) {
+		engine::math::vec3 viewing_dir = cam.center - cam.eye;
+		cam.center += viewing_dir.normalize() * SPEED;
+		cam.eye += viewing_dir.normalize() * SPEED;
+	}
+	else if (key == GLFW_KEY_A && (action == GLFW_PRESS || action == GLFW_REPEAT)) {
+		engine::math::vec3 viewing_dir = cam.center - cam.eye;
+		engine::math::vec3 moving_dir = engine::math::vec3::crossProduct(viewing_dir.normalize(), cam.up);
+		cam.center += moving_dir.normalize() * SPEED;
+		cam.eye += moving_dir.normalize() * SPEED;
+	}
+	else if (key == GLFW_KEY_S && (action == GLFW_PRESS || action == GLFW_REPEAT)) {
+		engine::math::vec3 viewing_dir = cam.center - cam.eye;
+		cam.center -= viewing_dir.normalize() * SPEED;
+		cam.eye -= viewing_dir.normalize() * SPEED;
+	}
+	else if (key == GLFW_KEY_D && (action == GLFW_PRESS || action == GLFW_REPEAT)) {
+		engine::math::vec3 viewing_dir = cam.center - cam.eye;
+		engine::math::vec3 moving_dir = engine::math::vec3::crossProduct(viewing_dir.normalize(), cam.up);
+		cam.center -= moving_dir.normalize() * SPEED;
+		cam.eye -= moving_dir.normalize() * SPEED;
+	}
+}
+
+void cursor_position_callback(GLFWwindow* win, double xpos, double ypos) {
+	if (mouse_pressed) {
+		if (last_mouse_pos.x == -1.0f || last_mouse_pos.y == -1.0f) {
+			last_mouse_pos.x = xpos;
+			last_mouse_pos.y = ypos;
+		}
+		else {
+			engine::math::vec2 curr_mouse_pos = engine::math::vec2(xpos, ypos);
+			engine::math::vec2 pos_dif = curr_mouse_pos - last_mouse_pos;
+
+			cam.yaw(pos_dif.x * SPEED);
+			cam.pitch(pos_dif.y * SPEED);
+
+			last_mouse_pos = curr_mouse_pos;
+		}
+
+	}
+}
+
+void mouse_button_callback(GLFWwindow* win, int button, int action, int mods) {
+	
+	if ((button == GLFW_MOUSE_BUTTON_RIGHT || button == GLFW_MOUSE_BUTTON_LEFT) && action == GLFW_PRESS) {
+		mouse_pressed = true;
+	}
+	else if ((button == GLFW_MOUSE_BUTTON_RIGHT || button == GLFW_MOUSE_BUTTON_LEFT) && action == GLFW_RELEASE) {
+		mouse_pressed = false;
+		last_mouse_pos.x = -1.0f;
+		last_mouse_pos.y = -1.0f;
+	}
+}
 
 void window_close_callback(GLFWwindow* win) {
 	destroyShaderProgram();
@@ -622,6 +693,9 @@ GLFWwindow* setupWindow(int winx, int winy, const char* title,
 void setupCallbacks(GLFWwindow* win) {
 	glfwSetWindowCloseCallback(win, window_close_callback);
 	glfwSetWindowSizeCallback(win, window_size_callback);
+	glfwSetKeyCallback(win, key_callback);
+	glfwSetCursorPosCallback(win, cursor_position_callback);
+	glfwSetMouseButtonCallback(win, mouse_button_callback);
 }
 
 GLFWwindow* setupGLFW(int gl_major, int gl_minor,
@@ -694,13 +768,13 @@ GLFWwindow* setup(int major, int minor,
 	createShaderProgram();
 	createBufferObjects();
 	
-	cam = engine::camera::camera(EYE, CENTER, UP);
-	cam.set_perspective(FOVY, ASPECT, NEAR, FAR);
+	cam = engine::camera::camera(engine::math::vec3::vec3(0.0f, 0.0f, 10.0f), engine::math::vec3::vec3(0.0f, 0.0f, 0.0f), engine::math::vec3::vec3(0.0f, 1.0f, 0.0f), winx, winy, 30, 1, 100);
+	cam.set_perspective();
 
 	return win;
 }
 
-////////////////////////////////////////////////////////////////////////// RUN
+///////////////////////////////////////////////////////////////////////// RUN
 
 void display(GLFWwindow* win, double elapsed_sec) {
 	drawScene();
@@ -725,7 +799,7 @@ void run(GLFWwindow* win) {
 	glfwTerminate();
 }
 
-////////////////////////////////////////////////////////////////////////// MAIN
+///////////////////////////////////////////////////////////////////////// MAIN
 
 int main(int argc, char* argv[]) {
 	int gl_major = 4, gl_minor = 3;
@@ -738,4 +812,4 @@ int main(int argc, char* argv[]) {
 	exit(EXIT_SUCCESS);
 }
 
-/////////////////////////////////////////////////////////////////////////// END
+///////////////////////////////////////////////////////////////////////// END
