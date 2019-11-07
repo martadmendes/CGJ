@@ -33,8 +33,12 @@ namespace engine {
 
 			static mat4 scale(float sx, float sy, float sz);
 			static mat4 translate(float dx, float dy, float dz);
-			static mat4 rotate(const vec3& axis, float angle);
-			static mat4 rodrigues(const vec3& axis, const float angle);
+			static mat4 rotate(const vec3& axis, float angle);  //just for xyz
+			static mat4 rodrigues(const vec3& axis, const float angle);  //any axis
+
+			static mat4 view_matrix(vec3 eye, vec3 center, vec3 up);
+			static mat4 ortho_matrix(float left, float right, float top, float bottom, float near, float far);
+			static mat4 perspective_matrix(float fovy, float aspect, float near, float far);
 		};
 	}
 }

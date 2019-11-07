@@ -2,44 +2,42 @@
 
 engine::camera::camera() {}
 
-engine::camera::camera(math::vec3 position) {
-
-}
-
-engine::camera::camera(math::vec3 position, math::vec3 center) {
-
-}
-
-engine::camera::camera(math::vec3 eye, math::vec3 center, math::vec3 up) {
-
-}
+engine::camera::camera(math::vec3 eye, math::vec3 center, math::vec3 up) : eye(eye), center(center), up(up) {}
 
 engine::camera::~camera() {}
 
-void engine::camera::look_at() {}
 
 void engine::camera::move_camera() {}
 
-engine::math::mat4 engine::camera::get_camera() {
-	return math::mat4();
+void engine::camera::look_at(math::vec3& new_eye, math::vec3& new_center, math::vec3& new_up) {
+	eye = new_eye;
+	center = new_center;
+	up = new_up;
 }
 
-engine::math::mat4 engine::camera::get_projection_matrix() {
-	return math::mat4();
+engine::math::mat4 engine::camera::get_view() {
+	return engine::math::matrix_factory::view_matrix(eye, center, up);
 }
 
-void engine::camera::set_projection_matrix() {}
+engine::math::mat4 engine::camera::get_projection() {
+	return projection_matrix;
+}
+
+void engine::camera::set_orthographic(float left, float right, float top, float bottom, float near, float far) {
+	projection_matrix = math::matrix_factory::ortho_matrix(left, right, top, bottom, near, far);
+}
+
+void engine::camera::set_perspective(float fovy, float aspect, float near, float far) {
+	projection_matrix = math::matrix_factory::perspective_matrix(fovy, aspect, near, far);
+}
 
 void engine::camera::yaw(float angle) {
 	math::mat4 yaw = math::matrix_factory::rotate(math::matrix_factory::y_axis, angle);
-	view = math::matrix_factory::mat4_to_mat3(yaw) * view;
+	center = math::matrix_factory::mat4_to_mat3(yaw) * center;
 }
 
 void engine::camera::pitch(float angle) {
 	math::mat4 pitch = math::matrix_factory::rotate(math::matrix_factory::x_axis, angle);
-	view = math::matrix_factory::mat4_to_mat3(pitch) * view;
+	center = math::matrix_factory::mat4_to_mat3(pitch) * center;
 }
 
-void engine::camera::invert_pitch() {
-
-}

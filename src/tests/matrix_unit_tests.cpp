@@ -234,8 +234,24 @@ void aula02() {
 
 	for (engine::math::vec3& v1 : vs) {
 		for (engine::math::vec3& v2 : vs) {
-			std::cout << engine::math::matrix_factory::rodrigues(90, v1) * engine::math::vec4(v2.x, v2.y, v2.z, 1.0f) << "\n" << std::endl;
+			std::cout << engine::math::matrix_factory::rodrigues(v1, 90) * engine::math::vec4(v2.x, v2.y, v2.z, 1.0f) << "\n" << std::endl;
 		}
 	}
 
+}
+
+
+///////// VIEW AND PROJECTION TESTS //////////
+void test_3d_matrices() {
+	std::cout << "view 1" << std::endl;
+	std::cout << engine::math::matrix_factory::view_matrix(engine::math::vec3(5.0f, 5.0f, 5.0f), engine::math::vec3(0.0f, 0.0f, 0.0f), engine::math::vec3(0.0f, 1.0f, 0.0f)) << std::endl;
+
+	std::cout << "view 2" << std::endl;
+	std::cout << engine::math::matrix_factory::view_matrix(engine::math::vec3(-5.0f, -5.0f, -5.0f), engine::math::vec3(0.0f, 0.0f, 0.0f), engine::math::vec3(0.0f, 1.0f, 0.0f)) << std::endl;
+
+	std::cout << "ortho" << std::endl;
+	std::cout << engine::math::matrix_factory::ortho_matrix(-2.0f, 2.0f, 2.0f, -2.0f, 1.0f, 10.0f) << std::endl;
+
+	std::cout << "perspective" << std::endl;
+	std::cout << engine::math::matrix_factory::perspective_matrix(30.0f, 640.0f / 480.0f, 1.0f, 10.0f) << std::endl;
 }

@@ -39,6 +39,9 @@
 #include "engine/math/mat3.hpp"
 #include "engine/math/mat4.hpp"
 #include "engine/math/matrix_factory.hpp"
+#include "tests/matrix_unit_tests.hpp"
+#include "tests/vector_unit_tests.hpp"
+#include "engine/camera.hpp"
 
 #define VERTICES 0
 #define COLORS 1
@@ -46,10 +49,18 @@
 
 engine::math::mat4 transformations[NUM_OBJ]; // array que contem as matrizes de transformações por objecto
 int num_indices[NUM_OBJ]; // array que contem o nr de indices por objecto
-GLuint VaoId[NUM_OBJ], VboId[3];  // 1 vao por obj, 2 vbo por vao (reutilizados)
+GLuint VaoId[NUM_OBJ], VboId[3];  // 1 vao por objecto, 2 vbo por vao (reutilizados)
+
 GLuint VertexShaderId, FragmentShaderId, ProgramId;
-GLint UboId, UniformId;
-const GLuint UBO_BP = 0;
+GLuint ModelUniformId, ViewUniformId, ProjectionUniformId;
+
+engine::camera cam;
+engine::math::vec3 EYE = engine::math::vec3::vec3(0.0f, 0.0f, 4.0f);
+engine::math::vec3 CENTER = engine::math::vec3::vec3(0.0f, 0.0f, 0.0f);
+engine::math::vec3 UP = engine::math::vec3::vec3(0.0f, 1.0f, 0.0f);
+int WIDTH = 640, HEIGHT = 640;
+float FOVY = 30, ASPECT = (float)WIDTH/(float)HEIGHT, NEAR = 1, FAR = 100;
+
 
 #define ERROR_CALLBACK
 #ifdef  ERROR_CALLBACK
@@ -167,17 +178,13 @@ const GLchar* VertexShader =
 	"in vec4 in_Color;\n"
 	"out vec4 ex_Color;\n"
 
-	"uniform mat4 Matrix;\n"
-
-	"uniform SharedMatrices\n"
-	"{\n"
-	"	mat4 ViewMatrix;\n"
-	"	mat4 ProjectionMatrix;\n"
-	"};\n"
+	"uniform mat4 ProjectionMatrix;\n"
+	"uniform mat4 ViewMatrix;\n"
+	"uniform mat4 ModelMatrix;\n"
 
 	"void main(void)\n"
 	"{\n"
-	"	gl_Position = Matrix * in_Position;\n"
+	"	gl_Position = ProjectionMatrix * ViewMatrix * ModelMatrix * in_Position;\n"
 	"	ex_Color = in_Color;\n"
 	"}\n"
 };
@@ -212,9 +219,9 @@ void createShaderProgram() {
 	glBindAttribLocation(ProgramId, COLORS, "in_Color");
 
 	glLinkProgram(ProgramId);
-	UniformId = glGetUniformLocation(ProgramId, "Matrix");
-	UboId = glGetUniformBlockIndex(ProgramId, "SharedMatrices");
-	glUniformBlockBinding(ProgramId, UboId, UBO_BP);
+	ProjectionUniformId = glGetUniformLocation(ProgramId, "ProjectionMatrix");
+	ViewUniformId = glGetUniformLocation(ProgramId, "ViewMatrix");
+	ModelUniformId = glGetUniformLocation(ProgramId, "ModelMatrix");
 
 	glDetachShader(ProgramId, VertexShaderId);
 	glDeleteShader(VertexShaderId);
@@ -343,12 +350,119 @@ void create_parallelogram(int obj_num, engine::math::vec4 color) {
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 }
+/*
+void create_back_triangle(int obj_num, engine::math::vec4 color) {
+	num_indices[obj_num] = 3;
+	glGenVertexArrays(1, &VaoId[obj_num]);
+	glBindVertexArray(VaoId[obj_num]);
+	{
+		glGenBuffers(3, VboId);
 
+		glBindBuffer(GL_ARRAY_BUFFER, VboId[0]);
+		{
+			glBufferData(GL_ARRAY_BUFFER, sizeof(tr), tr, GL_STATIC_DRAW);
+			glEnableVertexAttribArray(VERTICES);
+			glVertexAttribPointer(VERTICES, 4, GL_FLOAT, GL_FALSE, 0, 0);
+		}
+		glBindBuffer(GL_ARRAY_BUFFER, VboId[1]);
+		{
+			float vertex_color[4][4] = {
+				{color.x, color.y, color.z, color.z},
+				{color.x, color.y, color.z, color.z},
+				{color.x, color.y, color.z, color.z}
+			};
+
+			glBufferData(GL_ARRAY_BUFFER, sizeof(vertex_color), vertex_color, GL_STATIC_DRAW);
+			glEnableVertexAttribArray(COLORS);
+			glVertexAttribPointer(COLORS, 4, GL_FLOAT, GL_FALSE, 0, 0);
+		}
+		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, VboId[2]);
+		{
+			glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices_tr_back), indices_tr_back, GL_STATIC_DRAW);
+		}
+	}
+	glBindVertexArray(0);
+	glBindBuffer(GL_ARRAY_BUFFER, 0);
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+}
+
+void create_back_square(int obj_num, engine::math::vec4 color) {
+	num_indices[obj_num] = 6;
+	glGenVertexArrays(1, &VaoId[obj_num]);
+	glBindVertexArray(VaoId[obj_num]);
+	{
+		glGenBuffers(3, VboId);
+
+		glBindBuffer(GL_ARRAY_BUFFER, VboId[0]);
+		{
+			glBufferData(GL_ARRAY_BUFFER, sizeof(sq), sq, GL_STATIC_DRAW);
+			glEnableVertexAttribArray(VERTICES);
+			glVertexAttribPointer(VERTICES, 4, GL_FLOAT, GL_FALSE, 0, 0);
+		}
+		glBindBuffer(GL_ARRAY_BUFFER, VboId[1]);
+		{
+			float vertex_color[4][4] = {
+				{color.x, color.y, color.z, color.z},
+				{color.x, color.y, color.z, color.z},
+				{color.x, color.y, color.z, color.z},
+				{color.x, color.y, color.z, color.z}
+			};
+
+			glBufferData(GL_ARRAY_BUFFER, sizeof(vertex_color), vertex_color, GL_STATIC_DRAW);
+			glEnableVertexAttribArray(COLORS);
+			glVertexAttribPointer(COLORS, 4, GL_FLOAT, GL_FALSE, 0, 0);
+		}
+		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, VboId[2]);
+		{
+			glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices_sq_back), indices_sq_back, GL_STATIC_DRAW);
+		}
+	}
+	glBindVertexArray(0);
+	glBindBuffer(GL_ARRAY_BUFFER, 0);
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+}
+
+void create_back_parallelogram(int obj_num, engine::math::vec4 color) {
+	num_indices[obj_num] = 6;
+	glGenVertexArrays(1, &VaoId[obj_num]);
+	glBindVertexArray(VaoId[obj_num]);
+	{
+		glGenBuffers(3, VboId);
+
+		glBindBuffer(GL_ARRAY_BUFFER, VboId[0]);
+		{
+			glBufferData(GL_ARRAY_BUFFER, sizeof(pa), pa, GL_STATIC_DRAW);
+			glEnableVertexAttribArray(VERTICES);
+			glVertexAttribPointer(VERTICES, 4, GL_FLOAT, GL_FALSE, 0, 0);
+		}
+		glBindBuffer(GL_ARRAY_BUFFER, VboId[1]);
+		{
+			float vertex_color[4][4] = {
+				{color.x, color.y, color.z, color.z},
+				{color.x, color.y, color.z, color.z},
+				{color.x, color.y, color.z, color.z},
+				{color.x, color.y, color.z, color.z}
+			};
+
+			glBufferData(GL_ARRAY_BUFFER, sizeof(vertex_color), vertex_color, GL_STATIC_DRAW);
+			glEnableVertexAttribArray(COLORS);
+			glVertexAttribPointer(COLORS, 4, GL_FLOAT, GL_FALSE, 0, 0);
+		}
+		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, VboId[2]);
+		{
+			glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices_pa_back), indices_pa_back, GL_STATIC_DRAW);
+		}
+	}
+	glBindVertexArray(0);
+	glBindBuffer(GL_ARRAY_BUFFER, 0);
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+}
+*/
 void createBufferObjects() {
 	engine::math::vec3 z = engine::math::vec3(0, 0, 1);
 	engine::math::mat4 id = engine::math::matrix_factory::identity4x4();
-	//final scale if needed
-	engine::math::mat4 final_scale = engine::math::matrix_factory::scale(0.5f, 0.5f, 1.0f);
+
+	////// FRONT //////
 
 	//triangle 1: rotate + translate
 	engine::math::mat4 t1_rotate = engine::math::matrix_factory::rodrigues(z, 180);
@@ -402,6 +516,9 @@ void createBufferObjects() {
 	transformations[6] = t7_translate * t7_rotate * t7_scale;
 
 
+	///////// BACK /////////
+
+
 	create_triangle(0, white);
 	create_triangle(1, lilac);
 	create_triangle(2, blue);
@@ -409,6 +526,14 @@ void createBufferObjects() {
 	create_parallelogram(4, orange);
 	create_triangle(5, green);
 	create_triangle(6, yellow);
+
+	/*create_back_triangle(7, white);
+	create_back_triangle(8, lilac);
+	create_back_triangle(9, blue);
+	create_back_square(10, red);
+	create_back_parallelogram(11, orange);
+	create_back_triangle(12, green);
+	create_back_triangle(13, yellow);*/
 
 
 #ifndef ERROR_CALLBACK
@@ -434,7 +559,8 @@ void destroyBufferObjects() {
 	}
 }
 
-/////////////////////////////////////////////////////////////////////// SCENE
+/////////////////////////////////////////////////////////////////////// SCENEw
+
 
 void drawScene() {
 
@@ -449,7 +575,9 @@ void drawScene() {
 		glBindVertexArray(VaoId[i]);
 		glUseProgram(ProgramId);
 
-		glUniformMatrix4fv(UniformId, 1, GL_FALSE, transformations[i].data);
+		glUniformMatrix4fv(ProjectionUniformId, 1, GL_FALSE, cam.get_projection().data);
+		glUniformMatrix4fv(ViewUniformId, 1, GL_FALSE, cam.get_view().data);
+		glUniformMatrix4fv(ModelUniformId, 1, GL_FALSE, transformations[i].data);
 		glDrawElements(GL_TRIANGLES, num_indices[i], GL_UNSIGNED_SHORT, (GLvoid*)0);
 
 		glUseProgram(0);
@@ -565,6 +693,10 @@ GLFWwindow* setup(int major, int minor,
 #endif
 	createShaderProgram();
 	createBufferObjects();
+	
+	cam = engine::camera::camera(EYE, CENTER, UP);
+	cam.set_perspective(FOVY, ASPECT, NEAR, FAR);
+
 	return win;
 }
 
@@ -600,7 +732,8 @@ int main(int argc, char* argv[]) {
 	int is_fullscreen = 0;
 	int is_vsync = 1;
 	GLFWwindow* win = setup(gl_major, gl_minor,
-		640, 640 /*480*/, "Hello Modern 3D World", is_fullscreen, is_vsync);
+		WIDTH, HEIGHT, "Hello Modern 3D World", is_fullscreen, is_vsync);
+	test_3d_matrices();
 	run(win);
 	exit(EXIT_SUCCESS);
 }
