@@ -669,6 +669,12 @@ void window_close_callback(GLFWwindow* win) {
 
 void window_size_callback(GLFWwindow* win, int winx, int winy) {
 	glViewport(0, 0, winx, winy);
+	cam.width = winx;
+	cam.height = winy;
+	if (cam.is_ortho)
+		cam.set_orthographic();
+	else
+		cam.set_perspective();
 }
 
 ///////////////////////////////////////////////////////////////////////// SETUP
