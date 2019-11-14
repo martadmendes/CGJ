@@ -45,7 +45,7 @@
 
 #define VERTICES 0
 #define COLORS 1
-#define NUM_OBJ 14
+#define NUM_OBJ 6
 
 engine::math::mat4 transformations[NUM_OBJ]; // array que contem as matrizes de transformações por objecto
 int num_indices[NUM_OBJ]; // array que contem o nr de indices por objecto
@@ -56,10 +56,12 @@ GLuint ModelUniformId, ViewUniformId, ProjectionUniformId;
 
 engine::camera cam;
 int WIDTH = 640, HEIGHT = 640;
-float SPEED = 0.08f;
+float SPEED = 0.1f;
 
 bool mouse_pressed = false;
 engine::math::vec2 last_mouse_pos = engine::math::vec2(-1.0f, -1.0f);
+
+bool is_gimbal = false;
 
 #define ERROR_CALLBACK
 #ifdef  ERROR_CALLBACK
@@ -458,87 +460,25 @@ void create_back_parallelogram(int obj_num, engine::math::vec4 color) {
 }
 
 void createBufferObjects() {
+
+	create_square(0, lilac);
+	create_square(1, blue);
+	create_square(2, yellow);
+	create_square(3, orange);
+	create_square(4, green);
+	create_square(5, red);
+
 	engine::math::vec3 z = engine::math::vec3(0, 0, 1);
-	engine::math::mat4 id = engine::math::matrix_factory::identity4x4();
-
-	//triangle 1: rotate + translate
-	engine::math::mat4 t1_rotate = engine::math::matrix_factory::rodrigues(z, 180);
-	engine::math::mat4 t1_translate = engine::math::matrix_factory::translate(1.0f, 0.0f, 0.0f);
-
-	transformations[0] =  t1_translate * t1_rotate;
-
-	//triangle 2: rotate + translate
-	engine::math::mat4 t2_rotate = engine::math::matrix_factory::rodrigues(z, 135);
-	engine::math::mat4 t2_translate = engine::math::matrix_factory::translate(0.35f, -0.35f, 0.0f);
-
-	transformations[1] = t2_translate * t2_rotate;
+	engine::math::vec3 y = engine::math::vec3(0, 1, 0);
+	engine::math::vec3 x = engine::math::vec3(1, 0, 0);
 
 
-	//triangle 3: scale + rotate + translate
-	engine::math::mat4 t3_scale = engine::math::matrix_factory::scale(sqrt(0.5f), sqrt(0.5f), 1.0);
-	engine::math::mat4 t3_rotate = engine::math::matrix_factory::rodrigues(z, -135);
-	engine::math::mat4 t3_translate = engine::math::matrix_factory::translate(0.5f, 0.5f, 0.0f);
-
-	transformations[2] = t3_translate * t3_rotate * t3_scale;
-
-	//square 4: rotate + scale + translate
-	engine::math::mat4 s4_scale = engine::math::matrix_factory::scale(0.5f, 0.5f, 1.0f);
-	engine::math::mat4 s4_rotate = engine::math::matrix_factory::rodrigues(z, 45.0f);
-	engine::math::mat4 s4_translate = engine::math::matrix_factory::translate(-0.0015f, 0.355f, 0.0f);
-
-	transformations[3] = s4_translate * s4_rotate * s4_scale;
-
-
-	//parallelogram 5: rotate + scale + translate
-	engine::math::mat4 p5_scale = engine::math::matrix_factory::scale(1.0f, 0.35f, 1.0f);
-	engine::math::mat4 p5_rotate = engine::math::matrix_factory::rodrigues(z, 90.0f);
-	engine::math::mat4 p5_translate = engine::math::matrix_factory::translate(-0.53f, 0.0f, 0.0f);
-
-	transformations[4] =  p5_translate * p5_rotate * p5_scale;
-
-
-	//triangle 6: scale + rotate + translate
-	engine::math::mat4 t6_scale = engine::math::matrix_factory::scale(0.5f, 0.5f, 1.0);
-	engine::math::mat4 t6_rotate = engine::math::matrix_factory::rodrigues(z, 45);
-	engine::math::mat4 t6_translate = engine::math::matrix_factory::translate(-0.60f, 0.61f, 0.0f);
-
-	transformations[5] = t6_translate * t6_rotate * t6_scale;
-
-
-	//triangle 7: scale + rotate + translate
-	engine::math::mat4 t7_scale = engine::math::matrix_factory::scale(0.5f, 0.5f, 1.0);
-	engine::math::mat4 t7_rotate = engine::math::matrix_factory::rodrigues(z, -45);
-	engine::math::mat4 t7_translate = engine::math::matrix_factory::translate(-0.71f, 0.5f, 0.0f);
-
-	transformations[6] = t7_translate * t7_rotate * t7_scale;
-
-
-	//back side transformations are the same as the front, but with inverted indices
-	transformations[7] = transformations[0];
-	transformations[8] = transformations[1];
-	transformations[9] = transformations[2];
-	transformations[10] = transformations[3];
-	transformations[11] = transformations[4];
-	transformations[12] = transformations[5];
-	transformations[13] = transformations[6];
-
-
-	//front side object creation
-	create_triangle(0, white);
-	create_triangle(1, lilac);
-	create_triangle(2, blue);
-	create_square(3, red);
-	create_parallelogram(4, orange);
-	create_triangle(5, green);
-	create_triangle(6, yellow);
-	//back side object creation
-	create_back_triangle(7, white_back);
-	create_back_triangle(8, lilac_back);
-	create_back_triangle(9, blue_back);
-	create_back_square(10, red_back);
-	create_back_parallelogram(11, orange_back);
-	create_back_triangle(12, green_back);
-	create_back_triangle(13, yellow_back);
+	transformations[0] = engine::math::matrix_factory::translate(0.0f, 0.0f, 0.5f);
+	transformations[1] = engine::math::matrix_factory::translate(0.0f, 0.0f, -0.5f) * engine::math::matrix_factory::rodrigues(x, 180);
+	transformations[2] = engine::math::matrix_factory::translate(0.0f, 0.5f, 0.0f) * engine::math::matrix_factory::rodrigues(x, -90);
+	transformations[3] = engine::math::matrix_factory::translate(0.0f, -0.5f, 0.0f) * engine::math::matrix_factory::rodrigues(x, 90);
+	transformations[4] = engine::math::matrix_factory::translate(0.5f, 0.0f, 0.0f) * engine::math::matrix_factory::rodrigues(y, 90);
+	transformations[5] = engine::math::matrix_factory::translate(-0.5f, 0.0f, 0.0f) * engine::math::matrix_factory::rodrigues(y, -90);
 
 
 #ifndef ERROR_CALLBACK
@@ -607,6 +547,9 @@ void key_callback(GLFWwindow* win, int key, int scancode, int action, int mods) 
 			cam.is_ortho = true;
 		}
 	}
+	else if (key ==	GLFW_KEY_G && action == GLFW_PRESS) {
+		is_gimbal = !is_gimbal;
+	}
 	else if (key == GLFW_KEY_W && (action == GLFW_PRESS || action == GLFW_REPEAT)) {
 		engine::math::vec3 viewing_dir = cam.center - cam.eye;
 		cam.center += viewing_dir.normalize() * SPEED;
@@ -634,15 +577,21 @@ void key_callback(GLFWwindow* win, int key, int scancode, int action, int mods) 
 void cursor_position_callback(GLFWwindow* win, double xpos, double ypos) {
 	if (mouse_pressed) {
 		if (last_mouse_pos.x == -1.0f || last_mouse_pos.y == -1.0f) {
-			last_mouse_pos.x = xpos;
-			last_mouse_pos.y = ypos;
+			last_mouse_pos.x = (float)xpos;
+			last_mouse_pos.y = (float)ypos;
 		}
 		else {
-			engine::math::vec2 curr_mouse_pos = engine::math::vec2(xpos, ypos);
+			engine::math::vec2 curr_mouse_pos = engine::math::vec2((float)xpos, (float)ypos);
 			engine::math::vec2 pos_dif = curr_mouse_pos - last_mouse_pos;
 
-			cam.yaw(pos_dif.x * SPEED);
-			cam.pitch(pos_dif.y * SPEED);
+			if (is_gimbal) {
+				cam.move_horizontal(pos_dif.x * SPEED);
+				cam.move_vertical(pos_dif.y * SPEED);
+			}
+			else {
+				cam.q_horizontal(pos_dif.x * SPEED);
+				cam.q_vertical(pos_dif.y * SPEED);
+			}
 
 			last_mouse_pos = curr_mouse_pos;
 		}

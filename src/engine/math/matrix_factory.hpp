@@ -3,6 +3,7 @@
 #include "mat2.hpp"
 #include "mat3.hpp"
 #include "mat4.hpp"
+#include "qtrn.hpp"
 
 namespace engine {
 	namespace math {
@@ -39,6 +40,9 @@ namespace engine {
 			static mat4 view_matrix(vec3 eye, vec3 center, vec3 up);
 			static mat4 ortho_matrix(float left, float right, float top, float bottom, float near, float far);
 			static mat4 perspective_matrix(float fovy, float aspect, float near, float far);
+
+			const static mat3 q_gl_matrix(const qtrn& q);
+
 		};
 	}
 }

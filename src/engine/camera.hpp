@@ -39,5 +39,11 @@ namespace engine {
 		void pitch(float angle);
 		void yaw(float angle);
 
+		void move_vertical(float angle);
+		void move_horizontal(float angle);
+
+		void q_vertical(float angle);
+		void q_horizontal(float angle);
+
 	};
 }

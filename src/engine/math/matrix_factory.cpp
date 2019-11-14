@@ -114,3 +114,9 @@ engine::math::mat4 engine::math::matrix_factory::perspective_matrix(float fovy, 
 		0.0f, 0.0f, (near + far) / (near - far), -1.0f,
 		0.0f, 0.0f, (2 * far * near) / (near - far), 0.0f);
 }
+
+const engine::math::mat3 engine::math::matrix_factory::q_gl_matrix(const qtrn& q) {
+	return mat3(1.0f - 2.0f * q.v.y * q.v.y - 2.0f * q.v.z * q.v.z, 2.0f * q.v.x * q.v.y + 2.0f * q.t * q.v.z, 2.0f * q.v.x * q.v.z - 2.0f * q.t * q.v.y,
+		2.0f * q.v.x * q.v.y - 2.0f * q.t * q.v.z, 1.0f - 2.0f * q.v.x * q.v.x - 2.0f * q.v.z * q.v.z, 2.0f * q.v.y * q.v.z + 2.0f * q.t * q.v.x,
+		2.0f * q.v.x * q.v.z + 2.0f * q.t * q.v.y, 2.0f * q.v.y * q.v.z - 2.0f * q.t * q.v.x, 1.0f - 2.0f * q.v.x * q.v.x - 2.0f * q.v.y * q.v.y);
+}

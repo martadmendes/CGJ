@@ -67,3 +67,43 @@ void engine::camera::yaw(float angle) {
 	center = eye + (math::matrix_factory::mat4_to_mat3(yaw) * v);
 }
 
+void engine::camera::move_vertical(float angle) {
+	engine::math::vec3 v = (center - eye);
+	engine::math::vec3 s = engine::math::vec3::crossProduct(v, up).normalize();
+
+	math::mat4 pitch = math::matrix_factory::rodrigues(s, angle);
+	up = math::matrix_factory::mat4_to_mat3(pitch) * up;
+	eye = math::matrix_factory::mat4_to_mat3(pitch) * eye;
+}
+
+void engine::camera::move_horizontal(float angle) {
+	engine::math::vec3 v = (center - eye);
+	engine::math::vec3 s = engine::math::vec3::crossProduct(v, up).normalize();
+	engine::math::vec3 u = engine::math::vec3::crossProduct(s, v).normalize();
+
+	math::mat4 yaw = math::matrix_factory::rodrigues(u, angle);
+	eye = math::matrix_factory::mat4_to_mat3(yaw) * eye;
+}
+
+void engine::camera::q_vertical(float angle) {
+	engine::math::vec3 v = (center - eye);
+	engine::math::vec3 s = engine::math::vec3::crossProduct(v, up).normalize();
+
+	engine::math::qtrn q(s, angle);
+
+	math::mat3 pitch = math::matrix_factory::q_gl_matrix(q);
+	up = pitch * up;
+	eye = pitch * eye;
+}
+
+void engine::camera::q_horizontal(float angle) {
+	engine::math::vec3 v = (center - eye);
+	engine::math::vec3 s = engine::math::vec3::crossProduct(v, up).normalize();
+	engine::math::vec3 u = engine::math::vec3::crossProduct(s, v).normalize();
+
+	engine::math::qtrn q(u, angle);
+
+	math::mat3 yaw = math::matrix_factory::q_gl_matrix(q);
+	eye = yaw * eye;
+}
+

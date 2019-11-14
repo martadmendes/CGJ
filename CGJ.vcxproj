@@ -24,6 +24,7 @@
     <ClCompile Include="src\engine\math\mat3.cpp" />
     <ClCompile Include="src\engine\math\mat4.cpp" />
     <ClCompile Include="src\engine\math\matrix_factory.cpp" />
+    <ClCompile Include="src\engine\math\qtrn.cpp" />
     <ClCompile Include="src\engine\math\vec2.cpp" />
     <ClCompile Include="src\engine\math\vec3.cpp" />
     <ClCompile Include="src\engine\math\vec4.cpp" />
@@ -38,6 +39,7 @@
     <ClInclude Include="src\engine\math\mat3.hpp" />
     <ClInclude Include="src\engine\math\mat4.hpp" />
     <ClInclude Include="src\engine\math\matrix_factory.hpp" />
+    <ClInclude Include="src\engine\math\qtrn.hpp" />
     <ClInclude Include="src\engine\math\vec2.hpp" />
     <ClInclude Include="src\engine\math\vec3.hpp" />
     <ClInclude Include="src\engine\math\vec4.hpp" />
