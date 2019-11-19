@@ -20,6 +20,8 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\engine\camera.cpp" />
+    <ClCompile Include="src\engine\geometry\material.cpp" />
+    <ClCompile Include="src\engine\geometry\mesh.cpp" />
     <ClCompile Include="src\engine\math\mat2.cpp" />
     <ClCompile Include="src\engine\math\mat3.cpp" />
     <ClCompile Include="src\engine\math\mat4.cpp" />
@@ -28,12 +30,18 @@
     <ClCompile Include="src\engine\math\vec2.cpp" />
     <ClCompile Include="src\engine\math\vec3.cpp" />
     <ClCompile Include="src\engine\math\vec4.cpp" />
+    <ClCompile Include="src\engine\scene\animation.cpp" />
+    <ClCompile Include="src\engine\scene\scene_graph.cpp" />
+    <ClCompile Include="src\engine\scene\scene_node.cpp" />
+    <ClCompile Include="src\engine\shader.cpp" />
     <ClCompile Include="src\main.cpp" />
     <ClCompile Include="src\tests\matrix_unit_tests.cpp" />
     <ClCompile Include="src\tests\vector_unit_tests.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\engine\camera.hpp" />
+    <ClInclude Include="src\engine\geometry\material.hpp" />
+    <ClInclude Include="src\engine\geometry\mesh.hpp" />
     <ClInclude Include="src\engine\geometry\vertices.hpp" />
     <ClInclude Include="src\engine\math\mat2.hpp" />
     <ClInclude Include="src\engine\math\mat3.hpp" />
@@ -43,6 +51,10 @@
     <ClInclude Include="src\engine\math\vec2.hpp" />
     <ClInclude Include="src\engine\math\vec3.hpp" />
     <ClInclude Include="src\engine\math\vec4.hpp" />
+    <ClInclude Include="src\engine\scene\animation.h" />
+    <ClInclude Include="src\engine\scene\scene_graph.hpp" />
+    <ClInclude Include="src\engine\scene\scene_node.hpp" />
+    <ClInclude Include="src\engine\shader.hpp" />
     <ClInclude Include="src\tests\matrix_unit_tests.hpp" />
     <ClInclude Include="src\tests\vector_unit_tests.hpp" />
   </ItemGroup>
