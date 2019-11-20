@@ -1,6 +1,5 @@
 #pragma once
-
-#include "../math/vec4.hpp"
+#include "../include.hpp"
 
 typedef struct {
 	GLfloat XYZW[4];

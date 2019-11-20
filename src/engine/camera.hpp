@@ -1,8 +1,5 @@
 #pragma once
-#include "math/vec3.hpp"
-#include "math/mat3.hpp"
-#include "math/mat4.hpp"
-#include "math/matrix_factory.hpp"
+#include "include.hpp"
 
 enum class direction {left, right, up, down, forward, backward};
 

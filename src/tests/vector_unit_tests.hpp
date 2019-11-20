@@ -1,8 +1,6 @@
 #pragma once
 #include <iostream>
-#include "../engine/math/vec2.hpp"
-#include "../engine/math/vec3.hpp"
-#include "../engine/math/vec4.hpp"
+#include "../engine/include.hpp"
 
 void vec2_tests();
 void vec3_tests();

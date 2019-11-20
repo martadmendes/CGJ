@@ -27,34 +27,19 @@
 
 #include <iostream>
 #include <cmath>
-
-#include <GL/glew.h>
-#include <GLFW/glfw3.h>
-
+#include "engine/include.hpp"
 #include "engine/geometry/vertices.hpp"
-#include "engine/math/vec2.hpp"
-#include "engine/math/vec3.hpp"
-#include "engine/math/vec4.hpp"
-#include "engine/math/mat2.hpp"
-#include "engine/math/mat3.hpp"
-#include "engine/math/mat4.hpp"
-#include "engine/math/matrix_factory.hpp"
 #include "tests/matrix_unit_tests.hpp"
 #include "tests/vector_unit_tests.hpp"
 #include "engine/camera.hpp"
-
-#define VERTICES 0
-#define COLORS 1
-#define NUM_OBJ 6
+#include "engine/shader.hpp"
 
 engine::math::mat4 transformations[NUM_OBJ]; // array que contem as matrizes de transformações por objecto
 int num_indices[NUM_OBJ]; // array que contem o nr de indices por objecto
 GLuint VaoId[NUM_OBJ], VboId[3];  // 1 vao por objecto, 2 vbo por vao (reutilizados)
 
-GLuint VertexShaderId, FragmentShaderId, ProgramId;
-GLuint ModelUniformId, ViewUniformId, ProjectionUniformId;
-
 engine::camera cam;
+engine::shader shdr;
 int WIDTH = 640, HEIGHT = 640;
 float SPEED = 0.1f;
 
@@ -168,80 +153,6 @@ static void checkOpenGLError(std::string error) {
 }
 
 #endif // ERROR_CALLBACK
-
-///////////////////////////////////////////////////////////////////////// SHADERs
-
-const GLchar* VertexShader =
-{
-	"#version 330 core\n"
-
-	"in vec4 in_Position;\n"
-	"in vec4 in_Color;\n"
-	"out vec4 ex_Color;\n"
-
-	"uniform mat4 ProjectionMatrix;\n"
-	"uniform mat4 ViewMatrix;\n"
-	"uniform mat4 ModelMatrix;\n"
-
-	"void main(void)\n"
-	"{\n"
-	"	gl_Position = ProjectionMatrix * ViewMatrix * ModelMatrix * in_Position;\n"
-	"	ex_Color = in_Color;\n"
-	"}\n"
-};
-
-const GLchar* FragmentShader =
-{
-	"#version 330 core\n"
-
-	"in vec4 ex_Color;\n"
-	"out vec4 out_Color;\n"
-
-	"void main(void)\n"
-	"{\n"
-	"	out_Color = ex_Color;\n"
-	"}\n"
-};
-
-void createShaderProgram() {
-	VertexShaderId = glCreateShader(GL_VERTEX_SHADER);
-	glShaderSource(VertexShaderId, 1, &VertexShader, 0);
-	glCompileShader(VertexShaderId);
-
-	FragmentShaderId = glCreateShader(GL_FRAGMENT_SHADER);
-	glShaderSource(FragmentShaderId, 1, &FragmentShader, 0);
-	glCompileShader(FragmentShaderId);
-
-	ProgramId = glCreateProgram();
-	glAttachShader(ProgramId, VertexShaderId);
-	glAttachShader(ProgramId, FragmentShaderId);
-
-	glBindAttribLocation(ProgramId, VERTICES, "in_Position");
-	glBindAttribLocation(ProgramId, COLORS, "in_Color");
-
-	glLinkProgram(ProgramId);
-	ProjectionUniformId = glGetUniformLocation(ProgramId, "ProjectionMatrix");
-	ViewUniformId = glGetUniformLocation(ProgramId, "ViewMatrix");
-	ModelUniformId = glGetUniformLocation(ProgramId, "ModelMatrix");
-
-	glDetachShader(ProgramId, VertexShaderId);
-	glDeleteShader(VertexShaderId);
-	glDetachShader(ProgramId, FragmentShaderId);
-	glDeleteShader(FragmentShaderId);
-
-#ifndef ERROR_CALLBACK
-	checkOpenGLError("ERROR: Could not create shaders.");
-#endif
-}
-
-void destroyShaderProgram() {
-	glUseProgram(0);
-	glDeleteProgram(ProgramId);
-
-#ifndef ERROR_CALLBACK
-	checkOpenGLError("ERROR: Could not destroy shaders.");
-#endif
-}
 
 ///////////////////////////////////////////////////////////////////////// VAOs & VBOs
 
@@ -509,20 +420,13 @@ void destroyBufferObjects() {
 
 void drawScene() {
 
-	/*glBindBuffer(GL_UNIFORM_BUFFER, VboId[1]);
-	{
-		glBufferSubData(GL_UNIFORM_BUFFER, 0, sizeof(Matrix), ViewMatrix1);
-		glBufferSubData(GL_UNIFORM_BUFFER, sizeof(Matrix), sizeof(Matrix), ProjectionMatrix1);
-	}
-	glBindBuffer(GL_UNIFORM_BUFFER, 0);*/
-
 	for (int i = 0; i < NUM_OBJ; i++) {
 		glBindVertexArray(VaoId[i]);
-		glUseProgram(ProgramId);
+		glUseProgram(shdr.program_id);
 
-		glUniformMatrix4fv(ProjectionUniformId, 1, GL_FALSE, cam.get_projection().data);
-		glUniformMatrix4fv(ViewUniformId, 1, GL_FALSE, cam.get_view().data);
-		glUniformMatrix4fv(ModelUniformId, 1, GL_FALSE, transformations[i].data);
+		glUniformMatrix4fv(shdr.uniform_ids["projection"], 1, GL_FALSE, cam.get_projection().data);
+		glUniformMatrix4fv(shdr.uniform_ids["view"], 1, GL_FALSE, cam.get_view().data);
+		glUniformMatrix4fv(shdr.uniform_ids["model"], 1, GL_FALSE, transformations[i].data);
 		glDrawElements(GL_TRIANGLES, num_indices[i], GL_UNSIGNED_SHORT, (GLvoid*)0);
 
 		glUseProgram(0);
@@ -612,7 +516,7 @@ void mouse_button_callback(GLFWwindow* win, int button, int action, int mods) {
 }
 
 void window_close_callback(GLFWwindow* win) {
-	destroyShaderProgram();
+	shdr.delete_shader();
 	destroyBufferObjects();
 }
 
@@ -720,7 +624,7 @@ GLFWwindow* setup(int major, int minor,
 #ifdef ERROR_CALLBACK
 	setupErrorCallback();
 #endif
-	createShaderProgram();
+	shdr.create();
 	createBufferObjects();
 	
 	cam = engine::camera::camera(engine::math::vec3::vec3(0.0f, 0.0f, 10.0f), engine::math::vec3::vec3(0.0f, 0.0f, 0.0f), engine::math::vec3::vec3(0.0f, 1.0f, 0.0f), winx, winy, 30, 1, 100);
