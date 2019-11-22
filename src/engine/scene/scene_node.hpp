@@ -22,7 +22,7 @@ namespace engine {
 
 		scene_node* create_child();
 		
-		void draw();
+		void draw(math::mat4 view, math::mat4 projection);
 		void destroy();
 	};
 }

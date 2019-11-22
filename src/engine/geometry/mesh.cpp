@@ -1,16 +1,31 @@
 #include "mesh.hpp"
 
-engine::mesh::mesh(std::string file, math::vec4 color) : diffuse_color(color) {
+engine::mesh::mesh(std::string file, math::vec4 color) :
+	elements_loaded(false), num_indices(0) {
 	load_mesh_data(file);
 	process_mesh_data();
 	free_mesh_data();
+	crete_buffer_objects(color);
 }
 
-engine::mesh::~mesh() {}
+engine::mesh::~mesh() {
+	glBindVertexArray(vaoid);
+	glDisableVertexAttribArray(VERTICES);
+	glDisableVertexAttribArray(COLORS);
+	glDisableVertexAttribArray(NORMALS);
+	glDisableVertexAttribArray(TEXELS);
+	glDeleteVertexArrays(1, &vaoid);
+	glBindBuffer(GL_ARRAY_BUFFER, 0);
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+	glBindVertexArray(0);
+}
 
 void engine::mesh::draw() {
 	glBindVertexArray(vaoid);
-	glDrawArrays(GL_TRIANGLES, 0, (GLsizei)vertices.size());
+	if (elements_loaded)
+		glDrawElements(GL_TRIANGLES, num_indices, GL_UNSIGNED_SHORT, (GLvoid*)0);
+	else
+		glDrawArrays(GL_TRIANGLES, 0, (GLsizei)vertices.size());
 	glBindVertexArray(0);
 }
 
@@ -99,10 +114,10 @@ void engine::mesh::free_mesh_data() {
 	n_idx.clear();
 }
 
-void engine::mesh::crete_buffer_objects() {
+void engine::mesh::crete_buffer_objects(math::vec4 color) {
 	std::vector<math::vec4> colors(vertices.size());
 	for (int i = 0; i < colors.size(); i++)
-		colors[i] = diffuse_color;
+		colors[i] = color;
 	GLuint v_vbo, c_vbo, n_vbo, t_vbo;
 	glGenVertexArrays(1, &vaoid);
 	glBindVertexArray(vaoid);

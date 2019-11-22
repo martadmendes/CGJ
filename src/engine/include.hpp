@@ -15,4 +15,3 @@
 #define COLORS 1
 #define NORMALS 2
 #define TEXELS 3
-#define NUM_OBJ 6

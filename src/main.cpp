@@ -28,18 +28,18 @@
 #include <iostream>
 #include <cmath>
 #include "engine/include.hpp"
-#include "engine/geometry/vertices.hpp"
-#include "tests/matrix_unit_tests.hpp"
-#include "tests/vector_unit_tests.hpp"
 #include "engine/camera.hpp"
 #include "engine/shader.hpp"
+#include "engine/scene/scene_node.hpp"
+#include "tests/vector_unit_tests.hpp"
+#include "tests/matrix_unit_tests.hpp"
+#include "engine/geometry/colors.hpp"
+#include "engine/managers/mesh_manager.hpp"
+#include "engine/managers/shader_manager.hpp"
 
-engine::math::mat4 transformations[NUM_OBJ]; // array que contem as matrizes de transformações por objecto
-int num_indices[NUM_OBJ]; // array que contem o nr de indices por objecto
-GLuint VaoId[NUM_OBJ], VboId[3];  // 1 vao por objecto, 2 vbo por vao (reutilizados)
+engine::scene_node* root_node;
 
 engine::camera cam;
-engine::shader shdr;
 int WIDTH = 640, HEIGHT = 640;
 float SPEED = 0.1f;
 
@@ -156,286 +156,62 @@ static void checkOpenGLError(std::string error) {
 
 ///////////////////////////////////////////////////////////////////////// VAOs & VBOs
 
-void create_triangle(int obj_num, engine::math::vec4 color) {
-	num_indices[obj_num] = 3;
-	glGenVertexArrays(1, &VaoId[obj_num]);
-	glBindVertexArray(VaoId[obj_num]);
-	{
-		glGenBuffers(3, VboId);
-
-		glBindBuffer(GL_ARRAY_BUFFER, VboId[0]);
-		{
-			glBufferData(GL_ARRAY_BUFFER, sizeof(tr), tr, GL_STATIC_DRAW);
-			glEnableVertexAttribArray(VERTICES);
-			glVertexAttribPointer(VERTICES, 4, GL_FLOAT, GL_FALSE, 0, 0);
-		}
-		glBindBuffer(GL_ARRAY_BUFFER, VboId[1]);
-		{
-			float vertex_color[4][4] = {
-				{color.x, color.y, color.z, color.z},
-				{color.x, color.y, color.z, color.z},
-				{color.x, color.y, color.z, color.z}
-			};
-
-			glBufferData(GL_ARRAY_BUFFER, sizeof(vertex_color), vertex_color, GL_STATIC_DRAW);
-			glEnableVertexAttribArray(COLORS);
-			glVertexAttribPointer(COLORS, 4, GL_FLOAT, GL_FALSE, 0, 0);
-		}
-		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, VboId[2]);
-		{
-			glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices_tr), indices_tr, GL_STATIC_DRAW);
-		}
-	}
-	glBindVertexArray(0);
-	glBindBuffer(GL_ARRAY_BUFFER, 0);
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
-}
-
-void create_square(int obj_num, engine::math::vec4 color) {
-	num_indices[obj_num] = 6;
-	glGenVertexArrays(1, &VaoId[obj_num]);
-	glBindVertexArray(VaoId[obj_num]);
-	{
-		glGenBuffers(3, VboId);
-
-		glBindBuffer(GL_ARRAY_BUFFER, VboId[0]);
-		{
-			glBufferData(GL_ARRAY_BUFFER, sizeof(sq), sq, GL_STATIC_DRAW);
-			glEnableVertexAttribArray(VERTICES);
-			glVertexAttribPointer(VERTICES, 4, GL_FLOAT, GL_FALSE, 0, 0);
-		}
-		glBindBuffer(GL_ARRAY_BUFFER, VboId[1]);
-		{
-			float vertex_color[4][4] = {
-				{color.x, color.y, color.z, color.z},
-				{color.x, color.y, color.z, color.z},
-				{color.x, color.y, color.z, color.z},
-				{color.x, color.y, color.z, color.z}
-			};
-
-			glBufferData(GL_ARRAY_BUFFER, sizeof(vertex_color), vertex_color, GL_STATIC_DRAW);
-			glEnableVertexAttribArray(COLORS);
-			glVertexAttribPointer(COLORS, 4, GL_FLOAT, GL_FALSE, 0, 0);
-		}
-		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, VboId[2]);
-		{
-			glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices_sq), indices_sq, GL_STATIC_DRAW);
-		}
-	}
-	glBindVertexArray(0);
-	glBindBuffer(GL_ARRAY_BUFFER, 0);
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
-}
-
-void create_parallelogram(int obj_num, engine::math::vec4 color) {
-	num_indices[obj_num] = 6;
-	glGenVertexArrays(1, &VaoId[obj_num]);
-	glBindVertexArray(VaoId[obj_num]);
-	{
-		glGenBuffers(3, VboId);
-
-		glBindBuffer(GL_ARRAY_BUFFER, VboId[0]);
-		{
-			glBufferData(GL_ARRAY_BUFFER, sizeof(pa), pa, GL_STATIC_DRAW);
-			glEnableVertexAttribArray(VERTICES);
-			glVertexAttribPointer(VERTICES, 4, GL_FLOAT, GL_FALSE, 0, 0);
-		}
-		glBindBuffer(GL_ARRAY_BUFFER, VboId[1]);
-		{
-			float vertex_color[4][4] = {
-				{color.x, color.y, color.z, color.z},
-				{color.x, color.y, color.z, color.z},
-				{color.x, color.y, color.z, color.z},
-				{color.x, color.y, color.z, color.z}
-			};
-
-			glBufferData(GL_ARRAY_BUFFER, sizeof(vertex_color), vertex_color, GL_STATIC_DRAW);
-			glEnableVertexAttribArray(COLORS);
-			glVertexAttribPointer(COLORS, 4, GL_FLOAT, GL_FALSE, 0, 0);
-		}
-		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, VboId[2]);
-		{
-			glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices_pa), indices_pa, GL_STATIC_DRAW);
-		}
-	}
-	glBindVertexArray(0);
-	glBindBuffer(GL_ARRAY_BUFFER, 0);
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
-}
-
-void create_back_triangle(int obj_num, engine::math::vec4 color) {
-	num_indices[obj_num] = 3;
-	glGenVertexArrays(1, &VaoId[obj_num]);
-	glBindVertexArray(VaoId[obj_num]);
-	{
-		glGenBuffers(3, VboId);
-
-		glBindBuffer(GL_ARRAY_BUFFER, VboId[0]);
-		{
-			glBufferData(GL_ARRAY_BUFFER, sizeof(tr), tr, GL_STATIC_DRAW);
-			glEnableVertexAttribArray(VERTICES);
-			glVertexAttribPointer(VERTICES, 4, GL_FLOAT, GL_FALSE, 0, 0);
-		}
-		glBindBuffer(GL_ARRAY_BUFFER, VboId[1]);
-		{
-			float vertex_color[4][4] = {
-				{color.x, color.y, color.z, color.z},
-				{color.x, color.y, color.z, color.z},
-				{color.x, color.y, color.z, color.z}
-			};
-
-			glBufferData(GL_ARRAY_BUFFER, sizeof(vertex_color), vertex_color, GL_STATIC_DRAW);
-			glEnableVertexAttribArray(COLORS);
-			glVertexAttribPointer(COLORS, 4, GL_FLOAT, GL_FALSE, 0, 0);
-		}
-		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, VboId[2]);
-		{
-			glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices_tr_back), indices_tr_back, GL_STATIC_DRAW);
-		}
-	}
-	glBindVertexArray(0);
-	glBindBuffer(GL_ARRAY_BUFFER, 0);
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
-}
-
-void create_back_square(int obj_num, engine::math::vec4 color) {
-	num_indices[obj_num] = 6;
-	glGenVertexArrays(1, &VaoId[obj_num]);
-	glBindVertexArray(VaoId[obj_num]);
-	{
-		glGenBuffers(3, VboId);
-
-		glBindBuffer(GL_ARRAY_BUFFER, VboId[0]);
-		{
-			glBufferData(GL_ARRAY_BUFFER, sizeof(sq), sq, GL_STATIC_DRAW);
-			glEnableVertexAttribArray(VERTICES);
-			glVertexAttribPointer(VERTICES, 4, GL_FLOAT, GL_FALSE, 0, 0);
-		}
-		glBindBuffer(GL_ARRAY_BUFFER, VboId[1]);
-		{
-			float vertex_color[4][4] = {
-				{color.x, color.y, color.z, color.z},
-				{color.x, color.y, color.z, color.z},
-				{color.x, color.y, color.z, color.z},
-				{color.x, color.y, color.z, color.z}
-			};
-
-			glBufferData(GL_ARRAY_BUFFER, sizeof(vertex_color), vertex_color, GL_STATIC_DRAW);
-			glEnableVertexAttribArray(COLORS);
-			glVertexAttribPointer(COLORS, 4, GL_FLOAT, GL_FALSE, 0, 0);
-		}
-		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, VboId[2]);
-		{
-			glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices_sq_back), indices_sq_back, GL_STATIC_DRAW);
-		}
-	}
-	glBindVertexArray(0);
-	glBindBuffer(GL_ARRAY_BUFFER, 0);
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
-}
-
-void create_back_parallelogram(int obj_num, engine::math::vec4 color) {
-	num_indices[obj_num] = 6;
-	glGenVertexArrays(1, &VaoId[obj_num]);
-	glBindVertexArray(VaoId[obj_num]);
-	{
-		glGenBuffers(3, VboId);
-
-		glBindBuffer(GL_ARRAY_BUFFER, VboId[0]);
-		{
-			glBufferData(GL_ARRAY_BUFFER, sizeof(pa), pa, GL_STATIC_DRAW);
-			glEnableVertexAttribArray(VERTICES);
-			glVertexAttribPointer(VERTICES, 4, GL_FLOAT, GL_FALSE, 0, 0);
-		}
-		glBindBuffer(GL_ARRAY_BUFFER, VboId[1]);
-		{
-			float vertex_color[4][4] = {
-				{color.x, color.y, color.z, color.z},
-				{color.x, color.y, color.z, color.z},
-				{color.x, color.y, color.z, color.z},
-				{color.x, color.y, color.z, color.z}
-			};
-
-			glBufferData(GL_ARRAY_BUFFER, sizeof(vertex_color), vertex_color, GL_STATIC_DRAW);
-			glEnableVertexAttribArray(COLORS);
-			glVertexAttribPointer(COLORS, 4, GL_FLOAT, GL_FALSE, 0, 0);
-		}
-		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, VboId[2]);
-		{
-			glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices_pa_back), indices_pa_back, GL_STATIC_DRAW);
-		}
-	}
-	glBindVertexArray(0);
-	glBindBuffer(GL_ARRAY_BUFFER, 0);
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
-}
-
-void createBufferObjects() {
-
-	create_square(0, lilac);
-	create_square(1, blue);
-	create_square(2, yellow);
-	create_square(3, orange);
-	create_square(4, green);
-	create_square(5, red);
-
-	engine::math::vec3 z = engine::math::vec3(0, 0, 1);
-	engine::math::vec3 y = engine::math::vec3(0, 1, 0);
-	engine::math::vec3 x = engine::math::vec3(1, 0, 0);
-
-
-	transformations[0] = engine::math::matrix_factory::translate(0.0f, 0.0f, 0.5f);
-	transformations[1] = engine::math::matrix_factory::translate(0.0f, 0.0f, -0.5f) * engine::math::matrix_factory::rodrigues(x, 180);
-	transformations[2] = engine::math::matrix_factory::translate(0.0f, 0.5f, 0.0f) * engine::math::matrix_factory::rodrigues(x, -90);
-	transformations[3] = engine::math::matrix_factory::translate(0.0f, -0.5f, 0.0f) * engine::math::matrix_factory::rodrigues(x, 90);
-	transformations[4] = engine::math::matrix_factory::translate(0.5f, 0.0f, 0.0f) * engine::math::matrix_factory::rodrigues(y, 90);
-	transformations[5] = engine::math::matrix_factory::translate(-0.5f, 0.0f, 0.0f) * engine::math::matrix_factory::rodrigues(y, -90);
-
+void createMeshes() {
+	engine::mesh* m = new engine::mesh(sq, indices_sq, lilac);
+	engine::managers::mesh_manager::get_instance()->add_mesh("square1", m);
+	m = new engine::mesh(sq, indices_sq, blue);
+	engine::managers::mesh_manager::get_instance()->add_mesh("square2", m);
+	m = new engine::mesh(sq, indices_sq, yellow);
+	engine::managers::mesh_manager::get_instance()->add_mesh("square3", m);
+	m = new engine::mesh(sq, indices_sq, orange);
+	engine::managers::mesh_manager::get_instance()->add_mesh("square4", m);
+	m = new engine::mesh(sq, indices_sq, green);
+	engine::managers::mesh_manager::get_instance()->add_mesh("square5", m);
+	m = new engine::mesh(sq, indices_sq, red);
+	engine::managers::mesh_manager::get_instance()->add_mesh("square6", m);
 
 #ifndef ERROR_CALLBACK
 	checkOpenGLError("ERROR: Could not create VAOs and VBOs.");
 #endif
 }
 
-void destroyBufferObjects() {
-	for (int i = 0; i < NUM_OBJ; i++) {
-		glBindVertexArray(VaoId[i]);
-		glDisableVertexAttribArray(VERTICES);
-		glDisableVertexAttribArray(COLORS);
-		glDeleteBuffers(3, VboId);
-		glDeleteVertexArrays(1, &VaoId[i]);
-		glBindBuffer(GL_ARRAY_BUFFER, 0);
-		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
-		glBindBuffer(GL_UNIFORM_BUFFER, 0);
-		glBindVertexArray(0);
-
-#ifndef ERROR_CALLBACK
-		checkOpenGLError("ERROR: Could not destroy VAOs and VBOs.");
-#endif
-	}
-}
-
 ///////////////////////////////////////////////////////////////////////// SCENE
+
+void setupScenes() {
+	engine::math::vec3 z = engine::math::vec3(0, 0, 1);
+	engine::math::vec3 y = engine::math::vec3(0, 1, 0);
+	engine::math::vec3 x = engine::math::vec3(1, 0, 0);
+
+	root_node = new engine::scene_node();
+	root_node->shdr = engine::managers::shader_manager::get_instance()->get_shader("main");
+	engine::scene_node* child = root_node->create_child();
+	child->model_matrix = engine::math::matrix_factory::translate(0.0f, 0.0f, 0.5f);
+	child->m = engine::managers::mesh_manager::get_instance()->get_mesh("square1");
+	child = root_node->create_child();
+	child->model_matrix = engine::math::matrix_factory::translate(0.0f, 0.0f, -0.5f) * engine::math::matrix_factory::rodrigues(x, 180);
+	child->m = engine::managers::mesh_manager::get_instance()->get_mesh("square2");
+	child = root_node->create_child();
+	child->model_matrix = engine::math::matrix_factory::translate(0.0f, 0.5f, 0.0f) * engine::math::matrix_factory::rodrigues(x, -90);
+	child->m = engine::managers::mesh_manager::get_instance()->get_mesh("square3");
+	child = root_node->create_child();
+	child->model_matrix = engine::math::matrix_factory::translate(0.0f, -0.5f, 0.0f) * engine::math::matrix_factory::rodrigues(x, 90);
+	child->m = engine::managers::mesh_manager::get_instance()->get_mesh("square4");
+	child = root_node->create_child();
+	child->model_matrix = engine::math::matrix_factory::translate(0.5f, 0.0f, 0.0f) * engine::math::matrix_factory::rodrigues(y, 90);
+	child->m = engine::managers::mesh_manager::get_instance()->get_mesh("square5");
+	child = root_node->create_child();
+	child->model_matrix = engine::math::matrix_factory::translate(-0.5f, 0.0f, 0.0f) * engine::math::matrix_factory::rodrigues(y, -90);
+	child->m = engine::managers::mesh_manager::get_instance()->get_mesh("square6");
+}
 
 
 void drawScene() {
 
-	for (int i = 0; i < NUM_OBJ; i++) {
-		glBindVertexArray(VaoId[i]);
-		glUseProgram(shdr.program_id);
-
-		glUniformMatrix4fv(shdr.uniform_ids["projection"], 1, GL_FALSE, cam.get_projection().data);
-		glUniformMatrix4fv(shdr.uniform_ids["view"], 1, GL_FALSE, cam.get_view().data);
-		glUniformMatrix4fv(shdr.uniform_ids["model"], 1, GL_FALSE, transformations[i].data);
-		glDrawElements(GL_TRIANGLES, num_indices[i], GL_UNSIGNED_SHORT, (GLvoid*)0);
-
-		glUseProgram(0);
-		glBindVertexArray(0);
-
+	root_node->draw(cam.get_view(), cam.get_projection());
+	glUseProgram(0);
 #ifndef ERROR_CALLBACK
-		checkOpenGLError("ERROR: Could not draw scene.");
+	checkOpenGLError("ERROR: Could not draw scene.");
 #endif
-	}
 }
 
 ///////////////////////////////////////////////////////////////////////// CALLBACKS
@@ -516,8 +292,10 @@ void mouse_button_callback(GLFWwindow* win, int button, int action, int mods) {
 }
 
 void window_close_callback(GLFWwindow* win) {
-	shdr.delete_shader();
-	destroyBufferObjects();
+	delete root_node;
+	root_node = nullptr;
+	engine::managers::shader_manager::clean_manager();
+	engine::managers::mesh_manager::clean_manager();
 }
 
 void window_size_callback(GLFWwindow* win, int winx, int winy) {
@@ -531,6 +309,12 @@ void window_size_callback(GLFWwindow* win, int winx, int winy) {
 }
 
 ///////////////////////////////////////////////////////////////////////// SETUP
+
+void setupShaders() {
+	engine::shader* s = new engine::shader("resources/shaders/shader.vert",
+		"resources/shaders/shader.frag");
+	engine::managers::shader_manager::get_instance()->add_shader("main", s);
+}
 
 void glfw_error_callback(int error, const char* description) {
 	std::cerr << "GLFW Error: " << description << std::endl;
@@ -624,9 +408,9 @@ GLFWwindow* setup(int major, int minor,
 #ifdef ERROR_CALLBACK
 	setupErrorCallback();
 #endif
-	shdr.create();
-	createBufferObjects();
-	
+	setupShaders();
+	createMeshes();
+	setupScenes();
 	cam = engine::camera::camera(engine::math::vec3::vec3(0.0f, 0.0f, 10.0f), engine::math::vec3::vec3(0.0f, 0.0f, 0.0f), engine::math::vec3::vec3(0.0f, 1.0f, 0.0f), winx, winy, 30, 1, 100);
 	cam.set_perspective();
 

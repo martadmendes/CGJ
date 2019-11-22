@@ -1,15 +1,11 @@
 #include "shader.hpp"
 
-engine::shader::shader() {
+engine::shader::shader(std::string vertex, std::string fragment) {
 	uniform_ids = std::map<std::string, GLint>();
 	shaders = std::map<GLenum, GLuint>();
-}
 
-engine::shader::~shader() {}
-
-void engine::shader::create() {
-	load_shader("resources/shaders/shader.vert", GL_VERTEX_SHADER);
-	load_shader("resources/shaders/shader.frag", GL_FRAGMENT_SHADER);
+	load_shader(vertex, GL_VERTEX_SHADER);
+	load_shader(fragment, GL_FRAGMENT_SHADER);
 
 	program_id = glCreateProgram();
 	glAttachShader(program_id, shaders[GL_VERTEX_SHADER]);
@@ -29,7 +25,7 @@ void engine::shader::create() {
 	glDeleteShader(shaders[GL_FRAGMENT_SHADER]);
 }
 
-void engine::shader::delete_shader() {
+engine::shader::~shader() {
 	glUseProgram(0);
 	glDeleteProgram(program_id);
 }
