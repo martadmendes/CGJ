@@ -33,7 +33,6 @@
     <ClCompile Include="src\engine\math\vec2.cpp" />
     <ClCompile Include="src\engine\math\vec3.cpp" />
     <ClCompile Include="src\engine\math\vec4.cpp" />
-    <ClCompile Include="src\engine\scene\animation.cpp" />
     <ClCompile Include="src\engine\scene\scene_graph.cpp" />
     <ClCompile Include="src\engine\scene\scene_node.cpp" />
     <ClCompile Include="src\engine\shader.cpp" />
@@ -59,7 +58,6 @@
     <ClInclude Include="src\engine\math\vec2.hpp" />
     <ClInclude Include="src\engine\math\vec3.hpp" />
     <ClInclude Include="src\engine\math\vec4.hpp" />
-    <ClInclude Include="src\engine\scene\animation.hpp" />
     <ClInclude Include="src\engine\scene\scene_graph.hpp" />
     <ClInclude Include="src\engine\scene\scene_node.hpp" />
     <ClInclude Include="src\engine\shader.hpp" />

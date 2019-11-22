@@ -450,7 +450,6 @@ int main(int argc, char* argv[]) {
 	int is_vsync = 1;
 	GLFWwindow* win = setup(gl_major, gl_minor,
 		WIDTH, HEIGHT, "Hello Modern 3D World", is_fullscreen, is_vsync);
-	test_3d_matrices();
 	run(win);
 	exit(EXIT_SUCCESS);
 }
