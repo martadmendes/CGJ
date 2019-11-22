@@ -36,8 +36,7 @@
 #include "engine/geometry/colors.hpp"
 #include "engine/managers/mesh_manager.hpp"
 #include "engine/managers/shader_manager.hpp"
-
-engine::scene_node* root_node;
+#include "engine/managers/scene_manager.hpp"
 
 engine::camera cam;
 int WIDTH = 640, HEIGHT = 640;
@@ -182,7 +181,9 @@ void setupScenes() {
 	engine::math::vec3 y = engine::math::vec3(0, 1, 0);
 	engine::math::vec3 x = engine::math::vec3(1, 0, 0);
 
-	root_node = new engine::scene_node();
+	engine::scene_graph* main_scene = new engine::scene_graph();
+
+	engine::scene_node* root_node = main_scene->root;
 	root_node->shdr = engine::managers::shader_manager::get_instance()->get_shader("main");
 	engine::scene_node* child = root_node->create_child();
 	child->model_matrix = engine::math::matrix_factory::translate(0.0f, 0.0f, 0.5f);
@@ -202,13 +203,13 @@ void setupScenes() {
 	child = root_node->create_child();
 	child->model_matrix = engine::math::matrix_factory::translate(-0.5f, 0.0f, 0.0f) * engine::math::matrix_factory::rodrigues(y, -90);
 	child->m = engine::managers::mesh_manager::get_instance()->get_mesh("square6");
+
+	engine::managers::scene_manager::get_instance()->add_scene("main", main_scene);
 }
 
 
 void drawScene() {
-
-	root_node->draw(cam.get_view(), cam.get_projection());
-	glUseProgram(0);
+	engine::managers::scene_manager::get_instance()->get_scene("main")->draw(cam.get_view(), cam.get_projection());
 #ifndef ERROR_CALLBACK
 	checkOpenGLError("ERROR: Could not draw scene.");
 #endif
@@ -292,10 +293,9 @@ void mouse_button_callback(GLFWwindow* win, int button, int action, int mods) {
 }
 
 void window_close_callback(GLFWwindow* win) {
-	delete root_node;
-	root_node = nullptr;
-	engine::managers::shader_manager::clean_manager();
+	engine::managers::scene_manager::clean_manager();
 	engine::managers::mesh_manager::clean_manager();
+	engine::managers::shader_manager::clean_manager();
 }
 
 void window_size_callback(GLFWwindow* win, int winx, int winy) {

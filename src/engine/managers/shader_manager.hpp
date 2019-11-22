@@ -12,8 +12,8 @@ namespace engine {
 			std::map<std::string, shader*> shaders;
 
 			void destroy();
-		public:
 
+		public:
 			static shader_manager* get_instance();
 			static void clean_manager();
 			void add_shader(std::string name, shader* shdr);

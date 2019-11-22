@@ -12,8 +12,8 @@ namespace engine {
 			std::map<std::string, mesh*> meshes;
 
 			void destroy();
-		public:
 
+		public:
 			static mesh_manager* get_instance();
 			static void clean_manager();
 			void add_mesh(std::string name, mesh* m);

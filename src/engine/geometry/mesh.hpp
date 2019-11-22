@@ -43,7 +43,8 @@ namespace engine {
 	};
 	template<std::size_t SIZE_V, std::size_t SIZE_I>
 	inline mesh::mesh(const Vertex(&vertices)[SIZE_V],
-		const GLushort(&indices)[SIZE_I], const math::vec4 color) : elements_loaded(true) {
+		const GLushort(&indices)[SIZE_I], const math::vec4 color) :
+		elements_loaded(true), normals_loaded(false), texels_loaded(false) {
 		GLuint VboId[3];
 		num_indices = SIZE_I;
 		std::vector<math::vec4> colors(SIZE_V);

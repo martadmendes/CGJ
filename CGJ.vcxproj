@@ -23,6 +23,7 @@
     <ClCompile Include="src\engine\geometry\material.cpp" />
     <ClCompile Include="src\engine\geometry\mesh.cpp" />
     <ClCompile Include="src\engine\managers\mesh_manager.cpp" />
+    <ClCompile Include="src\engine\managers\scene_manager.cpp" />
     <ClCompile Include="src\engine\managers\shader_manager.cpp" />
     <ClCompile Include="src\engine\math\mat2.cpp" />
     <ClCompile Include="src\engine\math\mat3.cpp" />
@@ -48,6 +49,7 @@
     <ClInclude Include="src\engine\geometry\vertices.hpp" />
     <ClInclude Include="src\engine\include.hpp" />
     <ClInclude Include="src\engine\managers\mesh_manager.hpp" />
+    <ClInclude Include="src\engine\managers\scene_manager.hpp" />
     <ClInclude Include="src\engine\managers\shader_manager.hpp" />
     <ClInclude Include="src\engine\math\mat2.hpp" />
     <ClInclude Include="src\engine\math\mat3.hpp" />
